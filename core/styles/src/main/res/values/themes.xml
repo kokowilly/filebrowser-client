@@ -9,6 +9,4 @@
   </style>
 
   <style name="Theme.FileBrowser" parent="Base.Theme.FileBrowser" />
-
-  <style name="TextInputLayout" parent="Widget.Material3.TextInputEditText.OutlinedBox.Dense" />
 </resources>
