@@ -7,7 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.io.FileInputStream
@@ -42,7 +42,7 @@ class NetworkControllerTest {
 
     factory = NetworkControllerImpl(
       OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor {
+        .addNetworkInterceptor(HttpLoggingInterceptor {
           println(it)
         }.apply {
           level = BODY
@@ -72,21 +72,35 @@ class NetworkControllerTest {
   }
 
   @Test
-  fun `call login, should return new accesstoken`() {
-    val call = service.login(
+  fun `call login, should return new accesstoken, and able to renew`() = runTest {
+    val token = service.login(
       mapOf(
         "username" to serverUser,
         "password" to serverPassword
       )
     )
-    call.execute().raw().message shouldNot null
+
+    token shouldNot null
+
+    val refreshToken = factory.build(RefreshTokenService::class.java)
+    factory.setRefreshToken {
+      refreshToken.renew().raw().message
+    }
+    factory.setAccessToken(token)
+
+    service.renew()
+  }
+
+  interface RefreshTokenService {
+    @POST("/api/renew")
+    fun renew(): Response<String>
   }
 
   interface LoginService {
     @POST("/api/renew")
-    suspend fun renew(): Map<String, String>
+    suspend fun renew(): String
 
     @POST("/api/login")
-    fun login(@Body payload: Map<String, String>): Call<String>
+    suspend fun login(@Body payload: Map<String, String>): String
   }
 }
