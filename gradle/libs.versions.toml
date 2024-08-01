@@ -14,7 +14,8 @@ jetbrainsKotlinJvm = "1.9.0"
 ksp = "1.9.0-1.0.12"
 dagger = "2.48.1"
 okhttp = "4.9.3"
-androidxActivity = "1.0.0"
+androidxActivity = "1.9.1"
+constraintlayout = "2.1.4"
 
 [libraries]
 
@@ -41,6 +42,7 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-moshi-converter = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 retrofit-scalar-converter = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
