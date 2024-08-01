@@ -38,7 +38,7 @@ android {
 dependencies {
 
   implementation(project(":lib:network"))
-  implementation(project(":module:connection"))
+  implementation(project(":feature:connection"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
