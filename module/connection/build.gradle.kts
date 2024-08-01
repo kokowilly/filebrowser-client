@@ -1,29 +1,23 @@
 plugins {
-  alias(libs.plugins.android.application)
+  alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
 }
 
 android {
-  namespace = "id.kokowilly.filebrowser"
+  namespace = "id.kokowilly.filebrowser.connection"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "id.kokowilly.filebrowser"
     minSdk = 26
-    targetSdk = 34
-    versionCode = 1
-    versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles("consumer-rules.pro")
   }
 
   buildTypes {
     release {
       isMinifyEnabled = false
-      proguardFiles(
-        getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
-      )
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
   compileOptions {
@@ -33,13 +27,13 @@ android {
   kotlinOptions {
     jvmTarget = "1.8"
   }
+  buildFeatures {
+    viewBinding = true
+  }
 }
 
 dependencies {
-
-  implementation(project(":lib:network"))
-  implementation(project(":module:connection"))
-
+  implementation(libs.androidx.activity)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   implementation(libs.material)

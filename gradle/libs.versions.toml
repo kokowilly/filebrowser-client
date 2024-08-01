@@ -14,8 +14,11 @@ jetbrainsKotlinJvm = "1.9.0"
 ksp = "1.9.0-1.0.12"
 dagger = "2.48.1"
 okhttp = "4.9.3"
+androidxActivity = "1.0.0"
 
 [libraries]
+
+androidx-activity = {group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity"}
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
