@@ -2,10 +2,13 @@ package id.kokowilly.filebrowser.lib.network
 
 import com.squareup.moshi.Moshi
 import okhttp3.Interceptor
+import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.net.HttpURLConnection
 
 interface NetworkFactory {
   fun <T> build(service: Class<T>): T
@@ -14,7 +17,7 @@ interface NetworkFactory {
 interface NetworkController : NetworkFactory {
   fun initialize(baseUrl: String)
 
-  fun setRefreshToken(refreshToken: (String) -> String)
+  fun setRefreshToken(refreshToken: () -> String)
 
   fun setAccessToken(accessToken: String)
 }
@@ -25,20 +28,35 @@ class NetworkControllerImpl(
 ) : NetworkController {
   private lateinit var retrofit: Retrofit
 
-  private lateinit var refreshToken: (String) -> String
+  private lateinit var refreshToken: () -> String
 
-  override fun setRefreshToken(refreshToken: (String) -> String) {
+  override fun setRefreshToken(refreshToken: () -> String) {
     this.refreshToken = refreshToken
   }
 
   private var accessToken: String = ""
 
-  private val interceptor = Interceptor { chain ->
-    val request = chain.request().newBuilder()
-      .header("Cookie", "auth=$accessToken")
-      .header("X-Auth", accessToken)
-      .build()
-    chain.proceed(request)
+  private val interceptor = object : Interceptor {
+    private fun execute(chain: Chain): Response {
+      val request = chain.request().newBuilder()
+        .header("Cookie", "auth=$accessToken")
+        .header("X-Auth", accessToken)
+        .build()
+
+      return chain.proceed(request)
+    }
+
+    override fun intercept(chain: Chain): Response {
+      val response = execute(chain)
+
+      return if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+        accessToken = refreshToken.invoke()
+
+        execute(chain)
+      } else {
+        response
+      }
+    }
   }
 
   override fun initialize(baseUrl: String) {

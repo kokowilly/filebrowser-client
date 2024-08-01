@@ -1,5 +1,6 @@
 package id.kokowilly.filebrowser.lib.network
 
+import id.kokowilly.test.common.shouldBe
 import id.kokowilly.test.common.shouldNot
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -7,7 +8,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.io.FileInputStream
@@ -72,7 +72,8 @@ class NetworkControllerTest {
   }
 
   @Test
-  fun `call login, should return new accesstoken, and able to renew`() = runTest {
+  fun `call login, should return new accesstoken, when fake token is assigned, should refresh token`() =
+    runTest {
     val token = service.login(
       mapOf(
         "username" to serverUser,
@@ -81,20 +82,19 @@ class NetworkControllerTest {
     )
 
     token shouldNot null
-
-    val refreshToken = factory.build(RefreshTokenService::class.java)
+      var tokenRefreshed = 0
     factory.setRefreshToken {
-      refreshToken.renew().raw().message
+      tokenRefreshed++
+      token
     }
-    factory.setAccessToken(token)
+
+      factory.setAccessToken("fake token")
 
     service.renew()
+
+      tokenRefreshed shouldBe 1
   }
 
-  interface RefreshTokenService {
-    @POST("/api/renew")
-    fun renew(): Response<String>
-  }
 
   interface LoginService {
     @POST("/api/renew")
