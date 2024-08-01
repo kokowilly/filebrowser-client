@@ -1,6 +1,7 @@
 plugins {
   id("java-library")
   alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.ksp)
 }
 
 java {
@@ -9,7 +10,9 @@ java {
 }
 
 dependencies {
+  implementation(project(":core:common"))
   implementation(libs.dagger)
+  ksp(libs.dagger.compiler)
   implementation(libs.retrofit.core)
   implementation(libs.retrofit.moshi.converter)
   implementation(libs.moshi.kotlin)

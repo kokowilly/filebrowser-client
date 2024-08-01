@@ -20,6 +20,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "File Browser"
+
 include(":app")
+include(":core:common")
 include(":lib:network")
 include(":test:common")
