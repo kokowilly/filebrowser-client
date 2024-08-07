@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".NetworkConfigActivity"
+            android:name=".collection.NetworkConfigActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false" />
     </application>

@@ -6,14 +6,19 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.io.FileInputStream
-import java.util.Properties
+import java.util.*
 
-class NetworkControllerTest {
+class NetworkControllerTest : KoinComponent {
 
   private lateinit var serverBaseUrl: String
   private lateinit var serverUser: String
@@ -38,6 +43,9 @@ class NetworkControllerTest {
 
   @Before
   fun setUp() {
+    startKoin {
+      modules(libNetworkModule)
+    }
     loadProperties()
 
     factory = NetworkControllerImpl(
@@ -48,12 +56,17 @@ class NetworkControllerTest {
           level = BODY
         })
         .build(),
-      NetworkModule.moshi()
+      get()
     ).apply {
       initialize(serverBaseUrl)
     }
 
     service = factory.build(LoginService::class.java)
+  }
+
+  @After
+  fun tearDown() {
+    stopKoin()
   }
 
   @Test
@@ -74,26 +87,26 @@ class NetworkControllerTest {
   @Test
   fun `call login, should return new accesstoken, when fake token is assigned, should refresh token`() =
     runTest {
-    val token = service.login(
-      mapOf(
-        "username" to serverUser,
-        "password" to serverPassword
+      val token = service.login(
+        mapOf(
+          "username" to serverUser,
+          "password" to serverPassword
+        )
       )
-    )
 
-    token shouldNot null
+      token shouldNot null
       var tokenRefreshed = 0
-    factory.setRefreshToken {
-      tokenRefreshed++
-      token
-    }
+      factory.setRefreshToken {
+        tokenRefreshed++
+        token
+      }
 
       factory.setAccessToken("fake token")
 
-    service.renew()
+      service.renew()
 
       tokenRefreshed shouldBe 1
-  }
+    }
 
 
   interface LoginService {

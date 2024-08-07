@@ -9,10 +9,13 @@ java {
   targetCompatibility = JavaVersion.VERSION_17
 }
 
+kotlin {
+  jvmToolchain(17)
+}
+
 dependencies {
-  implementation(project(":core:common"))
-  implementation(libs.dagger)
-  ksp(libs.dagger.compiler)
+  implementation(libs.koin.core)
+
   implementation(libs.retrofit.core)
   implementation(libs.retrofit.moshi.converter)
   implementation(libs.retrofit.scalar.converter)

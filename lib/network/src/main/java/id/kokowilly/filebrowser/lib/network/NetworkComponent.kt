@@ -2,47 +2,26 @@ package id.kokowilly.filebrowser.lib.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dagger.Component
-import dagger.Module
-import dagger.Provides
-import id.kokowilly.filebrowser.lib.common.DaggerContainer
 import okhttp3.OkHttpClient
-import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+import org.koin.dsl.module
 
-@Singleton
-@Component(
-  modules = [
-    NetworkModule::class
-  ]
-)
-interface NetworkComponent {
-  val controller: NetworkController
-  val factory: NetworkFactory
+val libNetworkModule = module {
+  single { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
 
-  companion object : DaggerContainer<Unit, NetworkComponent>() {
-    override fun initialize(dependency: Unit): NetworkComponent {
-      return DaggerNetworkComponent.create()
-    }
+  single<NetworkController> {
+    NetworkControllerImpl(
+      OkHttpClient.Builder()
+        .addNetworkInterceptor(HttpLoggingInterceptor {
+          println(it)
+        }.apply {
+          level = BODY
+        })
+        .build(),
+      get()
+    )
   }
-}
 
-@Module
-internal object NetworkModule {
-  @Provides @Singleton
-  fun moshi(): Moshi =
-    Moshi.Builder()
-      .add(KotlinJsonAdapterFactory())
-      .build()
-
-  @Provides @Singleton
-  fun okhttp(): OkHttpClient =
-    OkHttpClient.Builder()
-      .build()
-
-  @Provides @Singleton
-  fun controller(okHttpClient: OkHttpClient, moshi: Moshi): NetworkController =
-    NetworkControllerImpl(okHttpClient, moshi)
-
-  @Provides
-  fun factory(controller: NetworkController): NetworkFactory = controller
+  factory<NetworkFactory> { get<NetworkController>() }
 }

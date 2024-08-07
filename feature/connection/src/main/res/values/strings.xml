@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_add">Add</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="alternate_url">Alternate Url</string>
+    <string name="primary_url">Primary Url</string>
+    <string name="connection_name">Connection Name</string>
+    <string name="save">Save</string>
+    <string name="edit_connection">Edit Connection</string>
+    <string name="no_data">No Data</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="test_connection">Test Connection</string>
+    <string name="connection_success">"Connection Configuration tested successfully</string>
+</resources>

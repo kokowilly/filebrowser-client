@@ -14,6 +14,8 @@ interface NetworkFactory {
   fun <T> build(service: Class<T>): T
 }
 
+inline fun <reified T : Any> NetworkFactory.build(): T = build(T::class.java)
+
 interface NetworkController : NetworkFactory {
   fun initialize(baseUrl: String)
 

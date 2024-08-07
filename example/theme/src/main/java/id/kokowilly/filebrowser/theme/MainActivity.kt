@@ -1,7 +1,7 @@
 package id.kokowilly.filebrowser.theme
 
 import android.os.Bundle
-import id.kokowilly.filebrowser.style.ImmersiveActivity
+import id.kokowilly.filebrowser.foundation.ImmersiveActivity
 
 class MainActivity : ImmersiveActivity() {
 

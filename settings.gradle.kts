@@ -22,9 +22,8 @@ dependencyResolutionManagement {
 rootProject.name = "File Browser"
 
 include(":app")
-include(":core:common")
+include(":core:foundation")
+include(":example:theme")
+include(":feature:connection")
 include(":lib:network")
 include(":test:common")
-include(":feature:connection")
-include(":core:styles")
-include(":example:theme")
