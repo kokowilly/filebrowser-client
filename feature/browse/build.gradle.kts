@@ -1,11 +1,10 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-  namespace = "id.kokowilly.filebrowser.connection"
+  namespace = "id.kokowilly.filebrowser.feature.browse"
   compileSdk = 34
 
   defaultConfig {
@@ -22,35 +21,22 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
   }
   kotlinOptions {
-    jvmTarget = "17"
-  }
-  buildFeatures {
-    viewBinding = true
+    jvmTarget = "1.8"
   }
 }
-
-ksp {
-  arg("room.schemaLocation", "$projectDir/schemas")
-}
-
 
 dependencies {
-  implementation(project(":core:foundation"))
-  implementation(project(":core:log"))
+
   implementation(project(":core:navigation"))
-  implementation(project(":lib:network"))
+  implementation(project(":core:foundation"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   implementation(libs.material)
-
-  implementation(libs.room.runtime)
-  implementation(libs.room.ktx)
-  ksp(libs.room.compiler)
 
   implementation(libs.koin.core)
   implementation(libs.koin.android)

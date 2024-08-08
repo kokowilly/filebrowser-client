@@ -27,6 +27,7 @@ import id.kokowilly.filebrowser.connection.databinding.PopupConnectionOptionBind
 import id.kokowilly.filebrowser.connection.editor.EditConnectionFragment
 import id.kokowilly.filebrowser.connection.errors.ConnectionException
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
+import id.kokowilly.filebrowser.lib.navigation.Navigation
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -114,6 +115,7 @@ class NetworkConfigActivity : ImmersiveActivity() {
     lifecycleScope.launch {
       viewModel.success
         .collect {
+          startActivity(Navigation.intentOf(this@NetworkConfigActivity, "connection:success"))
           Toast.makeText(
             this@NetworkConfigActivity,
             "Connected successfully.",

@@ -38,8 +38,10 @@ android {
 
 dependencies {
   implementation(project(":core:log"))
+  implementation(project(":core:navigation"))
   implementation(project(":lib:network"))
   implementation(project(":feature:connection"))
+  implementation(project(":feature:browse"))
 
   implementation(libs.koin.core)
   implementation(libs.koin.android)
