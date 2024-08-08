@@ -40,6 +40,7 @@ ksp {
 
 dependencies {
   implementation(project(":core:foundation"))
+  implementation(project(":core:log"))
   implementation(project(":lib:network"))
 
   implementation(libs.androidx.core.ktx)

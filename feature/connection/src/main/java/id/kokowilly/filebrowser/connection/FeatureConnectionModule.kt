@@ -2,6 +2,8 @@ package id.kokowilly.filebrowser.connection
 
 import androidx.room.Room
 import id.kokowilly.filebrowser.connection.collection.NetworkConfigViewModel
+import id.kokowilly.filebrowser.connection.collection.NetworkConnectionRepository
+import id.kokowilly.filebrowser.connection.collection.NetworkConnectionRepositoryImpl
 import id.kokowilly.filebrowser.connection.collection.ShowNetworkRepository
 import id.kokowilly.filebrowser.connection.collection.ShowNetworkRepositoryImpl
 import id.kokowilly.filebrowser.connection.database.ConnectionDatabase
@@ -28,10 +30,20 @@ val featureConnectionModule = module {
 
   factory<ShowNetworkRepository> { ShowNetworkRepositoryImpl(get(), Dispatchers.IO) }
 
+  factory<NetworkConnectionRepository> {
+    NetworkConnectionRepositoryImpl(
+      connectionDao = get(),
+      networkController = get(),
+      regex = Regex(Patterns.TOKEN_PATTERN),
+      dispatcher = Dispatchers.IO
+    )
+  }
+
   viewModel {
     NetworkConfigViewModel(
-      get(),
-      Dispatchers.Default
+      showNetworkRepository = get(),
+      networkConnectionRepository = get(),
+      dispatcher = Dispatchers.Default
     )
   }
 
