@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-
+  implementation(project(":core:log"))
   implementation(project(":lib:network"))
   implementation(project(":feature:connection"))
 
