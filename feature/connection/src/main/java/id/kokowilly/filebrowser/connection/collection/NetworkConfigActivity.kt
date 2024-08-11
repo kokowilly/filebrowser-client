@@ -85,8 +85,8 @@ class NetworkConfigActivity : ImmersiveActivity() {
     }.show(supportFragmentManager, null)
   }
 
-  override fun onResume() {
-    super.onResume()
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
 
     lifecycleScope.launch {
       viewModel.allConnections

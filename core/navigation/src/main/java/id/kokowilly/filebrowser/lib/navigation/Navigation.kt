@@ -2,7 +2,6 @@ package id.kokowilly.filebrowser.lib.navigation
 
 import android.content.Context
 import android.content.Intent
-import id.kokowilly.filebrowser.log.Logger
 import id.kokowilly.filebrowser.log.d
 
 object Navigation {
@@ -13,8 +12,7 @@ object Navigation {
   }
 
   fun intentOf(context: Context, path: String, data: Map<String, Any> = emptyMap()): Intent {
-    Logger.d("navigate to: $path")
-    Logger.d("available: ${registry.keys}")
+    d("navigate to: $path")
 
     return requireNotNull(registry[path]).makeIntent(context, data)
   }
