@@ -3,6 +3,7 @@ package id.kokowilly.filebrowser.feature.browse.list
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -45,36 +46,103 @@ class DataListActivity : ImmersiveActivity() {
         }
       }
     }
-  }
-}
 
-private class DataListAdapter : ListAdapter<FileEntity, DataListAdapter.FileViewHolder>(Callback) {
-  object Callback : DiffUtil.ItemCallback<FileEntity>() {
-    override fun areItemsTheSame(oldItem: FileEntity, newItem: FileEntity): Boolean =
-      oldItem.path == newItem.path
-
-    override fun areContentsTheSame(oldItem: FileEntity, newItem: FileEntity): Boolean =
-      oldItem == newItem
-  }
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder =
-    FileViewHolder(
-      ItemFileThumbnailBinding.inflate(
-        LayoutInflater.from(parent.context),
-        parent,
-        false
-      )
-    )
-
-  override fun onBindViewHolder(holder: FileViewHolder, position: Int) {
-    holder.bind(getItem(position))
-  }
-
-  class FileViewHolder(private val binding: ItemFileThumbnailBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-    fun bind(entity: FileEntity) {
-      binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
-      binding.itemLabel.text = entity.name
+    lifecycleScope.launch {
+      viewModel.files.collect{
+        adapter.submitList(it)
+      }
     }
   }
 }
+
+private class DataListAdapter : ListAdapter<Resource, DataListAdapter.ResourceViewHolder>(Callback) {
+
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceViewHolder =
+    when (viewType) {
+      TYPE_FOLDER -> ResourceViewHolder.FolderViewHolder(
+        ItemFileThumbnailBinding.inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          false
+        )
+      )
+
+      TYPE_IMAGE -> ResourceViewHolder.ImageViewHolder(
+        ItemFileThumbnailBinding.inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          false
+        )
+      )
+
+      TYPE_ICON -> ResourceViewHolder.IconViewHolder(
+        ItemFileThumbnailBinding.inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          false
+        )
+      )
+
+      else -> throw IllegalArgumentException()
+    }
+
+
+  override fun onBindViewHolder(holder: ResourceViewHolder, position: Int) {
+    when (holder) {
+      is ResourceViewHolder.FolderViewHolder -> holder.bind(getItem(position) as Resource.FolderResource)
+      is ResourceViewHolder.ImageViewHolder -> holder.bind(getItem(position) as Resource.ImageResource)
+      is ResourceViewHolder.IconViewHolder -> holder.bind(getItem(position) as Resource.IconResource)
+      else -> Unit
+    }
+  }
+
+  override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+    is Resource.FolderResource -> TYPE_FOLDER
+    is Resource.ImageResource -> TYPE_IMAGE
+    is Resource.IconResource -> TYPE_ICON
+    else -> throw IllegalArgumentException()
+  }
+
+  sealed class ResourceViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    class FolderViewHolder(
+      private val binding: ItemFileThumbnailBinding
+    ) : ResourceViewHolder(binding.root) {
+      fun bind(entity: Resource.FolderResource) {
+        binding.itemThumbnail.setImageResource(android.R.drawable.star_on)
+        binding.itemLabel.text = entity.name
+      }
+    }
+
+    class ImageViewHolder(
+      private val binding: ItemFileThumbnailBinding
+    ) : ResourceViewHolder(binding.root) {
+      fun bind(entity: Resource.ImageResource) {
+        binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
+        binding.itemLabel.text = entity.name
+      }
+    }
+
+    class IconViewHolder(
+      private val binding: ItemFileThumbnailBinding
+    ) : ResourceViewHolder(binding.root) {
+      fun bind(entity: Resource.IconResource) {
+        binding.itemThumbnail.setImageResource(android.R.drawable.star_off)
+        binding.itemLabel.text = entity.name
+      }
+    }
+  }
+
+
+  object Callback : DiffUtil.ItemCallback<Resource>() {
+    override fun areItemsTheSame(oldItem: Resource, newItem: Resource): Boolean =
+      oldItem.path == newItem.path
+
+    override fun areContentsTheSame(oldItem: Resource, newItem: Resource): Boolean =
+      oldItem == newItem
+  }
+}
+
+private const val TYPE_FOLDER = 0
+private const val TYPE_IMAGE = 1
+private const val TYPE_ICON = 2

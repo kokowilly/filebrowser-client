@@ -10,22 +10,27 @@ import kotlinx.coroutines.launch
 internal class DataListViewModel(
   private val repository: ResourceRepository
 ) : ViewModel() {
-  private val statePath = MutableStateFlow("/")
+  private val statePath = MutableStateFlow("")
   val path: StateFlow<String> = statePath
 
   private val stateUsage = MutableStateFlow(UsageResponse.EMPTY)
   val usage: StateFlow<UsageResponse> = stateUsage
 
+  private val stateFiles = MutableStateFlow<List<Resource>>(emptyList())
+  val files: StateFlow<List<Resource>> = stateFiles
+
   init {
     viewModelScope.launch {
       stateUsage.emit(repository.getUsage())
     }
+
+    viewModelScope.launch {
+      path.collect {
+        repository.getResource(it).also {
+          stateFiles.emit(it)
+        }
+      }
+    }
   }
 }
-
-data class FileEntity(
-  val path: String,
-  val name: String,
-  val thumbnail: String
-)
 
