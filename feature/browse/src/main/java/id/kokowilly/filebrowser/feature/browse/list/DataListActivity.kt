@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
+import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,7 +40,8 @@ class DataListActivity : ImmersiveActivity() {
 
           binding.barUsage.progress = percentage
 
-          binding.textUsage.text = "${it.used}/${it.total}"
+          binding.textUsage.text =
+            "${DataFormat.formatBytes(it.used)} / ${DataFormat.formatBytes(it.total)}"
         }
       }
     }
