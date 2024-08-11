@@ -2,6 +2,8 @@ package id.kokowilly.filebrowser.lib.navigation
 
 import android.content.Context
 import android.content.Intent
+import id.kokowilly.filebrowser.log.Logger
+import id.kokowilly.filebrowser.log.d
 
 object Navigation {
   private val registry = mutableMapOf<String, NavigationRegistry>()
@@ -10,8 +12,12 @@ object Navigation {
     this.registry[path] = registry
   }
 
-  fun intentOf(context: Context, path: String, data: Map<String, Any> = emptyMap()): Intent =
-    requireNotNull(registry[path]).makeIntent(context, data)
+  fun intentOf(context: Context, path: String, data: Map<String, Any> = emptyMap()): Intent {
+    Logger.d("navigate to: $path")
+    Logger.d("available: ${registry.keys}")
+
+    return requireNotNull(registry[path]).makeIntent(context, data)
+  }
 
 }
 

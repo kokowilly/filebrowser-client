@@ -2,6 +2,7 @@ package id.kokowilly.filebrowser.lib.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import id.kokowilly.filebrowser.lib.network.api.DataService
 import id.kokowilly.filebrowser.log.i
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,4 +26,6 @@ val libNetworkModule = module {
   }
 
   factory<NetworkFactory> { get<NetworkController>() }
+
+  factory<DataService> { get<NetworkFactory>().build() }
 }
