@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="no">No</string>
+  <string name="yes">Yes</string>
+  <string name="message_exit">Are you sure you want to exit?</string>
+  <string name="title_exit">Exit Confirmation</string>
+</resources>

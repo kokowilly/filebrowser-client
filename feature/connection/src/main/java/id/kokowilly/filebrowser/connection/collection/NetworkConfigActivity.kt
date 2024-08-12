@@ -116,11 +116,14 @@ class NetworkConfigActivity : ImmersiveActivity() {
       viewModel.success
         .collect {
           startActivity(Navigation.intentOf(this@NetworkConfigActivity, "connection:success"))
+
           Toast.makeText(
             this@NetworkConfigActivity,
             "Connected successfully.",
             Toast.LENGTH_SHORT
           ).show()
+
+          finish()
         }
     }
   }

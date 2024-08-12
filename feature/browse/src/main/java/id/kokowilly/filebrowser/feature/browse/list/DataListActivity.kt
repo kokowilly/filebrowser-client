@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -61,12 +62,27 @@ class DataListActivity : ImmersiveActivity() {
     }
   }
 
+  private fun showExitConfirmationDialog() {
+    AlertDialog.Builder(this)
+      .setTitle(R.string.title_exit)
+      .setMessage(R.string.message_exit)
+      .setPositiveButton(R.string.yes) { dialog, _ ->
+        dialog.dismiss()
+        finishAffinity()
+      }
+      .setNegativeButton(R.string.no) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .setCancelable(true)
+      .show()
+  }
+
   private val backDispatcher = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
       if (viewModel.path.value.isNotEmpty()) {
         viewModel.up()
       } else {
-        finish()
+        showExitConfirmationDialog()
       }
     }
   }
