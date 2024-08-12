@@ -51,7 +51,7 @@ sealed interface Resource {
       path = response.path,
       size = response.size,
       extension = response.extension,
-      thumbnail = response.path
+      thumbnail = response.path,
     )
   }
 
@@ -60,14 +60,16 @@ sealed interface Resource {
     override val path: String,
     override val size: Long,
     override val extension: String,
-    val iconResource: Int
+    val iconResource: Int,
+    val iconColor: Int,
   ) : Resource {
     constructor(response: ItemResponse) : this(
       name = response.name,
       path = response.path,
       size = response.size,
       extension = response.extension,
-      iconResource = 0
+      iconResource = 0,
+      iconColor = 0,
     )
   }
 
@@ -81,7 +83,7 @@ sealed interface Resource {
       name = response.name,
       path = response.path,
       size = response.size,
-      extension = response.extension
+      extension = response.extension,
     )
   }
 }

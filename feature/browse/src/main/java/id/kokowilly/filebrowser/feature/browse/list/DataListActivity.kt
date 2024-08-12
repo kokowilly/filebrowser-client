@@ -5,16 +5,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import id.kokowilly.filebrowser.foundation.R as CoreR
 
 class DataListActivity : ImmersiveActivity() {
   private val binding: ActivityDataListBinding by lazy {
@@ -48,14 +51,15 @@ class DataListActivity : ImmersiveActivity() {
     }
 
     lifecycleScope.launch {
-      viewModel.files.collect{
+      viewModel.files.collect {
         adapter.submitList(it)
       }
     }
   }
 }
 
-private class DataListAdapter : ListAdapter<Resource, DataListAdapter.ResourceViewHolder>(Callback) {
+private class DataListAdapter :
+  ListAdapter<Resource, DataListAdapter.ResourceViewHolder>(Callback) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceViewHolder =
     when (viewType) {
@@ -108,8 +112,19 @@ private class DataListAdapter : ListAdapter<Resource, DataListAdapter.ResourceVi
     class FolderViewHolder(
       private val binding: ItemFileThumbnailBinding
     ) : ResourceViewHolder(binding.root) {
+
+      init {
+        binding.itemThumbnail.setImageResource(R.drawable.ic_folder_32)
+        binding.itemThumbnail.setColorFilter(
+          ResourcesCompat.getColor(
+            itemView.context.resources,
+            CoreR.color.light_blue_600,
+            null
+          )
+        )
+      }
+
       fun bind(entity: Resource.FolderResource) {
-        binding.itemThumbnail.setImageResource(android.R.drawable.star_on)
         binding.itemLabel.text = entity.name
       }
     }
