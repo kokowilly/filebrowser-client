@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -38,6 +39,7 @@ class DataListActivity : ImmersiveActivity() {
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
     binding.listData.adapter = adapter
+    onBackPressedDispatcher.addCallback(backDispatcher)
 
     lifecycleScope.launch {
       viewModel.usage.collect {
@@ -55,6 +57,16 @@ class DataListActivity : ImmersiveActivity() {
     lifecycleScope.launch {
       viewModel.files.collect {
         adapter.submitList(it)
+      }
+    }
+  }
+
+  private val backDispatcher = object : OnBackPressedCallback(true) {
+    override fun handleOnBackPressed() {
+      if (viewModel.path.value.isNotEmpty()) {
+        viewModel.up()
+      } else {
+        finish()
       }
     }
   }

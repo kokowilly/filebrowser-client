@@ -36,5 +36,14 @@ internal class DataListViewModel(
   fun go(path: String) {
     statePath.tryEmit(path)
   }
-}
 
+  fun up() {
+    viewModelScope.launch {
+      val directory = path.value
+
+      if (directory.isNotEmpty()) {
+        statePath.emit(directory.substringBeforeLast('/', ""))
+      }
+    }
+  }
+}
