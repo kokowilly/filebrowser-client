@@ -32,5 +32,9 @@ internal class DataListViewModel(
       }
     }
   }
+
+  fun go(path: String) {
+    statePath.tryEmit(path)
+  }
 }
 

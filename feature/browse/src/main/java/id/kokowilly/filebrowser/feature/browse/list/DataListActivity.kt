@@ -26,7 +26,9 @@ class DataListActivity : ImmersiveActivity() {
 
   private val viewModel: DataListViewModel by viewModel()
 
-  private val adapter = DataListAdapter()
+  private val adapter = DataListAdapter {
+    viewModel.go(it.path)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -58,12 +60,14 @@ class DataListActivity : ImmersiveActivity() {
   }
 }
 
-private class DataListAdapter :
+private class DataListAdapter(
+  private val itemClickListener: (Resource) -> Unit
+) :
   ListAdapter<Resource, DataListAdapter.ResourceViewHolder>(Callback) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceViewHolder =
     when (viewType) {
-      TYPE_FOLDER -> ResourceViewHolder.FolderViewHolder(
+      TYPE_FOLDER -> FolderViewHolder(
         ItemFileThumbnailBinding.inflate(
           LayoutInflater.from(parent.context),
           parent,
@@ -71,7 +75,7 @@ private class DataListAdapter :
         )
       )
 
-      TYPE_IMAGE -> ResourceViewHolder.ImageViewHolder(
+      TYPE_IMAGE -> ImageViewHolder(
         ItemFileThumbnailBinding.inflate(
           LayoutInflater.from(parent.context),
           parent,
@@ -79,7 +83,7 @@ private class DataListAdapter :
         )
       )
 
-      TYPE_ICON -> ResourceViewHolder.IconViewHolder(
+      TYPE_ICON -> IconViewHolder(
         ItemFileThumbnailBinding.inflate(
           LayoutInflater.from(parent.context),
           parent,
@@ -93,10 +97,9 @@ private class DataListAdapter :
 
   override fun onBindViewHolder(holder: ResourceViewHolder, position: Int) {
     when (holder) {
-      is ResourceViewHolder.FolderViewHolder -> holder.bind(getItem(position) as Resource.FolderResource)
-      is ResourceViewHolder.ImageViewHolder -> holder.bind(getItem(position) as Resource.ImageResource)
-      is ResourceViewHolder.IconViewHolder -> holder.bind(getItem(position) as Resource.IconResource)
-      else -> Unit
+      is FolderViewHolder -> holder.bind(getItem(position) as Resource.FolderResource)
+      is ImageViewHolder -> holder.bind(getItem(position) as Resource.ImageResource)
+      is IconViewHolder -> holder.bind(getItem(position) as Resource.IconResource)
     }
   }
 
@@ -107,47 +110,63 @@ private class DataListAdapter :
     else -> throw IllegalArgumentException()
   }
 
-  sealed class ResourceViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+  abstract inner class ResourceViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    class FolderViewHolder(
-      private val binding: ItemFileThumbnailBinding
-    ) : ResourceViewHolder(binding.root) {
+  inner class FolderViewHolder(
+    private val binding: ItemFileThumbnailBinding
+  ) : ResourceViewHolder(binding.root) {
+    private lateinit var resource: Resource.FolderResource
 
-      init {
-        binding.itemThumbnail.setImageResource(R.drawable.ic_folder_32)
-        binding.itemThumbnail.setColorFilter(
-          ResourcesCompat.getColor(
-            itemView.context.resources,
-            CoreR.color.light_blue_600,
-            null
-          )
+    init {
+      binding.root.setOnClickListener { itemClickListener.invoke(resource) }
+
+      binding.itemThumbnail.setImageResource(R.drawable.ic_folder_32)
+      binding.itemThumbnail.setColorFilter(
+        ResourcesCompat.getColor(
+          itemView.context.resources,
+          CoreR.color.light_blue_600,
+          null
         )
-      }
-
-      fun bind(entity: Resource.FolderResource) {
-        binding.itemLabel.text = entity.name
-      }
+      )
     }
 
-    class ImageViewHolder(
-      private val binding: ItemFileThumbnailBinding
-    ) : ResourceViewHolder(binding.root) {
-      fun bind(entity: Resource.ImageResource) {
-        binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
-        binding.itemLabel.text = entity.name
-      }
-    }
-
-    class IconViewHolder(
-      private val binding: ItemFileThumbnailBinding
-    ) : ResourceViewHolder(binding.root) {
-      fun bind(entity: Resource.IconResource) {
-        binding.itemThumbnail.setImageResource(android.R.drawable.star_off)
-        binding.itemLabel.text = entity.name
-      }
+    fun bind(entity: Resource.FolderResource) {
+      this.resource = entity
+      binding.itemLabel.text = entity.name
     }
   }
 
+  inner class ImageViewHolder(
+    private val binding: ItemFileThumbnailBinding
+  ) : ResourceViewHolder(binding.root) {
+    private lateinit var resource: Resource.ImageResource
+
+    init {
+      binding.root.setOnClickListener { itemClickListener.invoke(resource) }
+    }
+
+    fun bind(entity: Resource.ImageResource) {
+      this.resource = entity
+      binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
+      binding.itemLabel.text = entity.name
+    }
+  }
+
+  inner class IconViewHolder(
+    private val binding: ItemFileThumbnailBinding
+  ) : ResourceViewHolder(binding.root) {
+    private lateinit var resource: Resource.IconResource
+
+    init {
+      binding.root.setOnClickListener { itemClickListener.invoke(resource) }
+    }
+
+    fun bind(entity: Resource.IconResource) {
+      this.resource = entity
+      binding.itemThumbnail.setImageResource(android.R.drawable.star_off)
+      binding.itemLabel.text = entity.name
+    }
+  }
 
   object Callback : DiffUtil.ItemCallback<Resource>() {
     override fun areItemsTheSame(oldItem: Resource, newItem: Resource): Boolean =
