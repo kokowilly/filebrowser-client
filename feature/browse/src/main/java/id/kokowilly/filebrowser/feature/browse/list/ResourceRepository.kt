@@ -14,7 +14,7 @@ internal interface ResourceRepository {
 
 internal class ResourceRepositoryImpl(
   private val dataService: DataService,
-  private val dispatcher: CoroutineDispatcher
+  private val dispatcher: CoroutineDispatcher,
 ) : ResourceRepository {
   override suspend fun getUsage(): UsageResponse = withContext(dispatcher) {
     dataService.usage()
@@ -43,14 +43,23 @@ sealed interface Resource {
     override val path: String,
     override val size: Long,
     override val extension: String,
+    val iconResource: Int,
+    val iconColor: Int,
     val thumbnail: String,
   ) : Resource {
-    constructor(response: ItemResponse) : this(
+    constructor(response: ItemResponse, iconAndColor: Pair<Int, Int>) : this(
       name = response.name,
       path = response.path,
       size = response.size,
       extension = response.extension,
-      thumbnail = response.path,
+      iconResource = iconAndColor.first,
+      iconColor = iconAndColor.second,
+      thumbnail = response.path
+    )
+
+    constructor(response: ItemResponse) : this(
+      response = response,
+      iconAndColor = IconsAndColors.getIconAndColor(response.extension)
     )
   }
 

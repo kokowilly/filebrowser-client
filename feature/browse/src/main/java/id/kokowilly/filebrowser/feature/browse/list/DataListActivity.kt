@@ -1,6 +1,5 @@
 package id.kokowilly.filebrowser.feature.browse.list
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -175,7 +174,9 @@ private class DataListAdapter(
 
     fun bind(entity: Resource.ImageResource) {
       this.resource = entity
-      binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
+      binding.itemThumbnail.setImageResource(resource.iconResource)
+      binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
+//      binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
       binding.itemLabel.text = entity.name
     }
   }
