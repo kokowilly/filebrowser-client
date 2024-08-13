@@ -28,9 +28,15 @@ class DataListActivity : ImmersiveActivity() {
 
   private val viewModel: DataListViewModel by viewModel()
 
-  private val adapter = DataListAdapter {
-    viewModel.go(it.path)
-  }
+  private val adapter = DataListAdapter(
+    itemClickListener = {
+      when (it) {
+        is Resource.FolderResource ->
+          viewModel.go(it.path)
+        else -> Unit
+      }
+    }
+  )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -89,7 +95,7 @@ class DataListActivity : ImmersiveActivity() {
 }
 
 private class DataListAdapter(
-  private val itemClickListener: (Resource) -> Unit
+  private val itemClickListener: (Resource) -> Unit,
 ) :
   ListAdapter<Resource, DataListAdapter.ResourceViewHolder>(Callback) {
 
@@ -141,7 +147,7 @@ private class DataListAdapter(
   abstract inner class ResourceViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
   inner class FolderViewHolder(
-    private val binding: ItemFileThumbnailBinding
+    private val binding: ItemFileThumbnailBinding,
   ) : ResourceViewHolder(binding.root) {
     private lateinit var resource: Resource.FolderResource
 
@@ -159,7 +165,7 @@ private class DataListAdapter(
   }
 
   inner class ImageViewHolder(
-    private val binding: ItemFileThumbnailBinding
+    private val binding: ItemFileThumbnailBinding,
   ) : ResourceViewHolder(binding.root) {
     private lateinit var resource: Resource.ImageResource
 
@@ -175,7 +181,7 @@ private class DataListAdapter(
   }
 
   inner class IconViewHolder(
-    private val binding: ItemFileThumbnailBinding
+    private val binding: ItemFileThumbnailBinding,
   ) : ResourceViewHolder(binding.root) {
     private lateinit var resource: Resource.IconResource
 
