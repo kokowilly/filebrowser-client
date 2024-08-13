@@ -6,28 +6,44 @@
     android:layout_height="match_parent">
 
   <androidx.appcompat.widget.AppCompatImageView
-      android:id="@+id/image_banner"
+      android:id="@+id/action_bar"
       android:layout_width="match_parent"
-      android:layout_height="120dp"
-      android:elevation="4dp"
+      android:layout_height="96dp"
       android:background="?colorPrimary"
+      android:backgroundTint="#2000"
+      android:backgroundTintMode="src_atop"
+      android:elevation="4dp"
       android:scaleType="centerCrop"
-      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/image_banner"
+      app:layout_constraintTop_toTopOf="parent" />
+
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/image_banner"
+      android:layout_width="120dp"
+      android:layout_height="0dp"
+      android:background="?colorPrimary"
+      android:elevation="4dp"
+      android:scaleType="centerCrop"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/action_bar"
       tools:src="@tools:sample/avatars" />
 
   <ProgressBar
-      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
       android:id="@+id/bar_usage"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginHorizontal="@dimen/horizontal_margin"
       android:elevation="8dp"
-      android:progressTint="?colorAccent"
-      android:min="0"
       android:max="100"
-      app:layout_constraintBottom_toBottomOf="@id/image_banner"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+      android:min="0"
+      android:progressTint="?colorAccent"
+      app:layout_constraintBottom_toBottomOf="@id/action_bar"
+      app:layout_constraintEnd_toEndOf="@id/action_bar"
+      app:layout_constraintStart_toStartOf="@id/action_bar"
       tools:layout_height="32dp"
       tools:max="100"
       tools:progress="50" />
@@ -45,12 +61,14 @@
 
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/list_data"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="0dp"
       android:paddingHorizontal="@dimen/horizontal_margin"
       app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/image_banner"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/image_banner"
+      app:layout_constraintTop_toBottomOf="@id/action_bar"
       app:spanCount="3"
       tools:itemCount="3"
       tools:listitem="@layout/item_file_thumbnail" />
