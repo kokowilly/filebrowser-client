@@ -22,12 +22,11 @@ internal class ResourceRepositoryImpl(
 
   override suspend fun getResource(path: String): List<Resource> = withContext(dispatcher) {
     dataService.directory(path).items
-      .mapNotNull {
-        when (it.type) {
-          "image" -> Resource.ImageResource(it)
-          "icon" -> Resource.IconResource(it)
-          "" -> Resource.FolderResource(it)
-          else -> null
+      .map {
+        when {
+          it.type == "image" -> Resource.ImageResource(it)
+          it.isDir -> Resource.FolderResource(it)
+          else -> Resource.IconResource(it)
         }
       }
   }
@@ -63,13 +62,18 @@ sealed interface Resource {
     val iconResource: Int,
     val iconColor: Int,
   ) : Resource {
-    constructor(response: ItemResponse) : this(
+    constructor(response: ItemResponse, iconAndColor: Pair<Int, Int>) : this(
       name = response.name,
       path = response.path,
       size = response.size,
       extension = response.extension,
-      iconResource = 0,
-      iconColor = 0,
+      iconResource = iconAndColor.first,
+      iconColor = iconAndColor.second,
+    )
+
+    constructor(response: ItemResponse) : this(
+      response = response,
+      iconAndColor = IconsAndColors.getIconAndColor(response.extension)
     )
   }
 
@@ -87,3 +91,4 @@ sealed interface Resource {
     )
   }
 }
+

@@ -149,13 +149,7 @@ private class DataListAdapter(
       binding.root.setOnClickListener { itemClickListener.invoke(resource) }
 
       binding.itemThumbnail.setImageResource(R.drawable.ic_folder_32)
-      binding.itemThumbnail.setColorFilter(
-        ResourcesCompat.getColor(
-          itemView.context.resources,
-          CoreR.color.light_blue_600,
-          null
-        )
-      )
+      binding.itemThumbnail.setColorFilter(itemView.getColor(CoreR.color.light_blue_600))
     }
 
     fun bind(entity: Resource.FolderResource) {
@@ -191,7 +185,8 @@ private class DataListAdapter(
 
     fun bind(entity: Resource.IconResource) {
       this.resource = entity
-      binding.itemThumbnail.setImageResource(android.R.drawable.star_off)
+      binding.itemThumbnail.setImageResource(resource.iconResource)
+      binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
       binding.itemLabel.text = entity.name
     }
   }
@@ -208,3 +203,9 @@ private class DataListAdapter(
 private const val TYPE_FOLDER = 0
 private const val TYPE_IMAGE = 1
 private const val TYPE_ICON = 2
+
+private fun View.getColor(color: Int): Int = ResourcesCompat.getColor(
+  resources,
+  color,
+  null
+)
