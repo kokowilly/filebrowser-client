@@ -59,17 +59,15 @@
       app:layout_constraintStart_toStartOf="@id/bar_usage"
       tools:text="1000/2000" />
 
-  <androidx.recyclerview.widget.RecyclerView
+  <id.kokowilly.filebrowser.feature.browse.views.DynamicGridRecyclerView
       android:id="@+id/list_data"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:paddingHorizontal="@dimen/horizontal_margin"
-      app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/image_banner"
       app:layout_constraintTop_toBottomOf="@id/action_bar"
-      app:spanCount="3"
       tools:itemCount="3"
       tools:listitem="@layout/item_file_thumbnail" />
 
