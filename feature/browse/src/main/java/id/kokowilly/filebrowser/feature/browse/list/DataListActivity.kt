@@ -16,6 +16,7 @@ import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBindi
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import id.kokowilly.filebrowser.foundation.R as CoreR
@@ -32,6 +33,7 @@ class DataListActivity : ImmersiveActivity() {
       when (it) {
         is Resource.FolderResource ->
           viewModel.go(it.path)
+
         else -> Unit
       }
     }
@@ -61,9 +63,16 @@ class DataListActivity : ImmersiveActivity() {
     }
 
     lifecycleScope.launch {
-      viewModel.files.collect {
-        adapter.submitList(it)
-      }
+      viewModel.files
+        .map { items ->
+          items.sortedWith(
+            compareBy<Resource> { it !is Resource.FolderResource }
+              .thenBy { it.name }
+          )
+        }
+        .collect {
+          adapter.submitList(it)
+        }
     }
   }
 
