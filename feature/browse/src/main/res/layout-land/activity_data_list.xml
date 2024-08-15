@@ -49,21 +49,36 @@
       tools:progress="50" />
 
   <com.google.android.material.textview.MaterialTextView
-      android:id="@+id/text_usage"
+      android:id="@+id/text_path"
+      style="@style/ShadowedText"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/vertical_margin"
       android:elevation="8dp"
+      android:lines="2"
       app:layout_constraintBottom_toTopOf="@id/bar_usage"
-      app:layout_constraintEnd_toEndOf="@id/bar_usage"
+      app:layout_constraintEnd_toStartOf="@id/text_usage"
       app:layout_constraintStart_toStartOf="@id/bar_usage"
+      tools:text="1000/2000" />
+
+  <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/text_usage"
+      style="@style/ShadowedText"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:elevation="8dp"
+      android:lines="1"
+      app:layout_constraintEnd_toEndOf="@id/bar_usage"
+      app:layout_constraintTop_toTopOf="@id/text_path"
       tools:text="1000/2000" />
 
   <id.kokowilly.filebrowser.feature.browse.views.DynamicGridRecyclerView
       android:id="@+id/list_data"
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:clipToPadding="false"
       android:paddingHorizontal="@dimen/horizontal_margin"
+      android:paddingBottom="?actionBarSize"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/image_banner"

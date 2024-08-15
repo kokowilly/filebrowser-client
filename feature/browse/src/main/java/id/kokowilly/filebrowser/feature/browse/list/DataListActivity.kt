@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -42,6 +45,14 @@ class DataListActivity : ImmersiveActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(binding.root)
+
+    ViewCompat.setOnApplyWindowInsetsListener(binding.listData) { view, insets ->
+      val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+      view.updatePadding(
+        bottom = systemBarsInsets.bottom
+      )
+      insets
+    }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -59,6 +70,12 @@ class DataListActivity : ImmersiveActivity() {
           binding.textUsage.text =
             "${DataFormat.formatBytes(it.used)} / ${DataFormat.formatBytes(it.total)}"
         }
+      }
+    }
+
+    lifecycleScope.launch {
+      viewModel.path.collect {
+        binding.textPath.text = it.ifBlank { "/" }
       }
     }
 
