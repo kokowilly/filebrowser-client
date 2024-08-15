@@ -1,30 +1,23 @@
 plugins {
-  alias(libs.plugins.android.application)
+  alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-  namespace = "id.kokowilly.filebrowser"
+  namespace = "id.kokowilly.filebrowser.lib.navigation"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "id.kokowilly.filebrowser"
     minSdk = 26
-    targetSdk = 34
-    versionCode = 1
-    versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles("consumer-rules.pro")
   }
 
   buildTypes {
     release {
       isMinifyEnabled = false
-      proguardFiles(
-        getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
-      )
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
   compileOptions {
@@ -38,15 +31,6 @@ android {
 
 dependencies {
   implementation(project(":core:log"))
-  implementation(project(":core:navigation"))
-  implementation(project(":lib:network"))
-  implementation(project(":feature:connection"))
-  implementation(project(":feature:browse"))
-
-  implementation(libs.koin.core)
-  implementation(libs.koin.android)
-
-  implementation(libs.androidx.multidex)
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="icon_red">#d32f2f</color>
+  <color name="icon_violet">#7b1fa2</color>
+  <color name="icon_blue">#1976d2</color>
+  <color name="icon_green">#388e3c</color>
+  <color name="icon_yellow">#fbc02d</color>
+  <color name="icon_orange">#f57c00</color>
+  <color name="icon_grey">#616161</color>
+</resources>

@@ -14,6 +14,8 @@ kotlin {
 }
 
 dependencies {
+  implementation(project(":core:log"))
+
   implementation(libs.koin.core)
 
   implementation(libs.retrofit.core)

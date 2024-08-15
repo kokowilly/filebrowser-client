@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/image_banner"
+      android:layout_width="match_parent"
+      android:layout_height="120dp"
+      android:background="?colorPrimary"
+      android:elevation="4dp"
+      android:scaleType="centerCrop"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:src="@tools:sample/avatars" />
+
+  <ProgressBar
+      android:id="@+id/bar_usage"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/horizontal_margin"
+      android:elevation="8dp"
+      android:max="100"
+      android:min="0"
+      android:progressTint="?colorAccent"
+      app:layout_constraintBottom_toBottomOf="@id/image_banner"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      tools:layout_height="32dp"
+      tools:max="100"
+      tools:progress="50" />
+
+  <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/text_path"
+      style="@style/ShadowedText"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/vertical_margin"
+      android:elevation="8dp"
+      android:lines="2"
+      app:layout_constraintBottom_toTopOf="@id/bar_usage"
+      app:layout_constraintEnd_toStartOf="@id/text_usage"
+      app:layout_constraintStart_toStartOf="@id/bar_usage"
+      tools:text="1000/2000" />
+
+  <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/text_usage"
+      style="@style/ShadowedText"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:elevation="8dp"
+      android:lines="1"
+      app:layout_constraintEnd_toEndOf="@id/bar_usage"
+      app:layout_constraintTop_toTopOf="@id/text_path"
+      tools:text="1000/2000" />
+
+  <id.kokowilly.filebrowser.feature.browse.views.DynamicGridRecyclerView
+      android:id="@+id/list_data"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:clipToPadding="false"
+      android:paddingHorizontal="@dimen/horizontal_margin"
+      android:paddingBottom="?actionBarSize"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/image_banner"
+      tools:itemCount="3"
+      tools:listitem="@layout/item_file_thumbnail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

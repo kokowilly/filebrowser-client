@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -17,14 +18,17 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import id.kokowilly.filebrowser.connection.R
 import id.kokowilly.filebrowser.connection.collection.ConnectionAdapter.ConnectionViewHolder
+import id.kokowilly.filebrowser.connection.collection.NetworkConfigViewModel.ConnectionData
 import id.kokowilly.filebrowser.connection.databinding.ActivityNetworkConfigBinding
 import id.kokowilly.filebrowser.connection.databinding.ItemConnectionBinding
 import id.kokowilly.filebrowser.connection.databinding.PopupConnectionOptionBinding
 import id.kokowilly.filebrowser.connection.editor.EditConnectionFragment
+import id.kokowilly.filebrowser.connection.errors.ConnectionException
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
+import id.kokowilly.filebrowser.lib.navigation.Navigation
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -37,7 +41,7 @@ class NetworkConfigActivity : ImmersiveActivity() {
   }
 
   private val connectionAdapter = ConnectionAdapter(
-    clickListener = { connection -> },
+    clickListener = { connection -> viewModel.chooseConnection(connection.id) },
     menuClickListener = { anchor, connection -> showOptionsPopup(anchor, connection) }
   )
 
@@ -67,6 +71,7 @@ class NetworkConfigActivity : ImmersiveActivity() {
         )
       )
     }
+
     binding.buttonAdd.setOnClickListener {
       showEditor(0)
     }
@@ -80,16 +85,45 @@ class NetworkConfigActivity : ImmersiveActivity() {
     }.show(supportFragmentManager, null)
   }
 
-  override fun onResume() {
-    super.onResume()
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
 
     lifecycleScope.launch {
       viewModel.allConnections
-        .flowOn(Dispatchers.Main)
         .collect {
           connectionAdapter.submitList(it)
 
           binding.textNoData.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+        }
+    }
+
+    lifecycleScope.launch {
+      viewModel.error
+        .filterIsInstance(ConnectionException::class)
+        .collect {
+          Toast.makeText(
+            this@NetworkConfigActivity,
+            getString(
+              R.string.error_connection,
+              it.connection.name
+            ),
+            Toast.LENGTH_SHORT
+          ).show()
+        }
+    }
+
+    lifecycleScope.launch {
+      viewModel.success
+        .collect {
+          startActivity(Navigation.intentOf(this@NetworkConfigActivity, "connection:success"))
+
+          Toast.makeText(
+            this@NetworkConfigActivity,
+            "Connected successfully.",
+            Toast.LENGTH_SHORT
+          ).show()
+
+          finish()
         }
     }
   }
@@ -120,8 +154,7 @@ class NetworkConfigActivity : ImmersiveActivity() {
 private class ConnectionAdapter(
   private val clickListener: (ConnectionData) -> Unit,
   private val menuClickListener: (View, ConnectionData) -> Unit
-) :
-  ListAdapter<ConnectionData, ConnectionViewHolder>(ConnectionDifferential) {
+) : ListAdapter<ConnectionData, ConnectionViewHolder>(ConnectionDifferential) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConnectionViewHolder =
     ConnectionViewHolder(

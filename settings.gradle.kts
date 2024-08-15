@@ -23,7 +23,10 @@ rootProject.name = "File Browser"
 
 include(":app")
 include(":core:foundation")
+include(":core:log")
+include(":core:navigation")
 include(":example:theme")
 include(":feature:connection")
 include(":lib:network")
 include(":test:common")
+include(":feature:browse")
