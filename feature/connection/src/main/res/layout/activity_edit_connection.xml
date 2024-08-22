@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingVertical="@dimen/vertical_margin"
     tools:context=".collection.NetworkConfigActivity"
-    tools:theme="@style/Theme.AppCompat.DayNight.Dialog">
+    tools:theme="@style/Theme.FileBrowser">
 
   <com.google.android.material.textview.MaterialTextView
       android:id="@+id/textTitle"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
+      android:layout_height="?actionBarSize"
       android:gravity="center"
       android:padding="@dimen/horizontal_margin"
       android:text="@string/edit_connection"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/button_save"
+      style="@style/Widget.Material3.Button.OutlinedButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/horizontal_margin"
+      android:text="@string/save"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/button_test" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/button_test"
+      style="@style/Widget.Material3.Button.OutlinedButton"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/horizontal_margin"
+      android:text="@string/test_connection"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/button_save"
+      app:layout_constraintStart_toStartOf="parent" />
 
   <ScrollView
       android:id="@+id/scrollInputs"
@@ -26,7 +48,8 @@
       android:layout_below="@id/textTitle"
       android:layout_alignParentBottom="true"
       android:paddingHorizontal="@dimen/horizontal_margin"
-      android:paddingBottom="64dp">
+      android:paddingBottom="64dp"
+      app:layout_constraintTop_toBottomOf="@id/textTitle">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -116,28 +139,6 @@
             android:inputType="textPassword" />
 
       </com.google.android.material.textfield.TextInputLayout>
-
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/button_save"
-          style="@style/Widget.Material3.Button.OutlinedButton"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/layout_password"
-          android:layout_alignParentEnd="true"
-          android:layout_marginTop="@dimen/vertical_margin"
-          android:text="@string/save" />
-
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/button_test"
-          style="@style/Widget.Material3.Button.OutlinedButton"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/layout_password"
-          android:layout_alignParentStart="true"
-          android:layout_marginTop="@dimen/vertical_margin"
-          android:layout_marginEnd="@dimen/horizontal_margin"
-          android:layout_toStartOf="@id/button_save"
-          android:text="@string/test_connection" />
     </RelativeLayout>
   </ScrollView>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

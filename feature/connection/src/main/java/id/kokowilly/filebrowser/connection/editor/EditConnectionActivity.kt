@@ -1,73 +1,40 @@
 package id.kokowilly.filebrowser.connection.editor
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.kokowilly.filebrowser.connection.R
 import id.kokowilly.filebrowser.connection.database.entity.Connection
-import id.kokowilly.filebrowser.connection.databinding.FragmentEditConnectionBinding
+import id.kokowilly.filebrowser.connection.databinding.ActivityEditConnectionBinding
 import id.kokowilly.filebrowser.foundation.logics.TextWatchers
+import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditConnectionFragment : BottomSheetDialogFragment() {
+class EditConnectionActivity : ImmersiveActivity() {
 
   companion object {
     const val EXTRA_ID = "edit_connection_id"
   }
 
-  private var _binding: FragmentEditConnectionBinding? = null
-  private val binding get() = _binding!!
+  private val binding by lazy { ActivityEditConnectionBinding.inflate(layoutInflater) }
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View = FragmentEditConnectionBinding.inflate(
-    inflater,
-    container,
-    false
-  ).also {
-    _binding = it
-  }.root
-
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-  }
-
-  private var id = 0
+  private val id: Int by lazy { intent.getIntExtra(EXTRA_ID, 0) }
 
   private val viewModel: EditConnectionViewModel by viewModel()
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(binding.root)
+  }
 
-    extractArguments()
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
 
     setupLogic()
-  }
-
-  private fun extractArguments() {
-    id = arguments?.getInt(EXTRA_ID, 0) ?: 0
-  }
-
-  override fun onStart() {
-    super.onStart()
-    dialog?.also {
-      if (it is BottomSheetDialog) {
-        it.behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-      }
-    }
   }
 
   private fun setupLogic() {
@@ -92,7 +59,7 @@ class EditConnectionFragment : BottomSheetDialogFragment() {
       lifecycleScope.launch {
         viewModel.save(getConnection())
 
-        dismiss()
+        finish()
       }
     }
 
@@ -118,7 +85,7 @@ class EditConnectionFragment : BottomSheetDialogFragment() {
           binding.buttonSave.isEnabled = isSuccess
           if (isSuccess) {
             Toast.makeText(
-              requireContext(),
+              this@EditConnectionActivity,
               R.string.connection_success,
               Toast.LENGTH_SHORT
             ).show()
@@ -130,7 +97,7 @@ class EditConnectionFragment : BottomSheetDialogFragment() {
       viewModel.error
         .flowOn(Dispatchers.Main)
         .collect {
-          Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+          Toast.makeText(this@EditConnectionActivity, it.message, Toast.LENGTH_SHORT).show()
         }
     }
   }

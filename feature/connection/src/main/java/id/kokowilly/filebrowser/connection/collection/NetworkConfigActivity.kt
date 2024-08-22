@@ -1,5 +1,6 @@
 package id.kokowilly.filebrowser.connection.collection
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,7 @@ import id.kokowilly.filebrowser.connection.collection.NetworkConfigViewModel.Con
 import id.kokowilly.filebrowser.connection.databinding.ActivityNetworkConfigBinding
 import id.kokowilly.filebrowser.connection.databinding.ItemConnectionBinding
 import id.kokowilly.filebrowser.connection.databinding.PopupConnectionOptionBinding
-import id.kokowilly.filebrowser.connection.editor.EditConnectionFragment
+import id.kokowilly.filebrowser.connection.editor.EditConnectionActivity
 import id.kokowilly.filebrowser.connection.errors.ConnectionException
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import id.kokowilly.filebrowser.lib.navigation.Navigation
@@ -78,11 +79,9 @@ class NetworkConfigActivity : ImmersiveActivity() {
   }
 
   private fun showEditor(id: Int) {
-    EditConnectionFragment().apply {
-      arguments = Bundle().apply {
-        putInt(EditConnectionFragment.EXTRA_ID, id)
-      }
-    }.show(supportFragmentManager, null)
+    Intent(this, EditConnectionActivity::class.java)
+      .putExtra(EditConnectionActivity.EXTRA_ID, id)
+      .also { startActivity(it) }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -119,7 +118,7 @@ class NetworkConfigActivity : ImmersiveActivity() {
 
           Toast.makeText(
             this@NetworkConfigActivity,
-            "Connected successfully.",
+            R.string.message_connection_success,
             Toast.LENGTH_SHORT
           ).show()
 
@@ -153,7 +152,7 @@ class NetworkConfigActivity : ImmersiveActivity() {
 
 private class ConnectionAdapter(
   private val clickListener: (ConnectionData) -> Unit,
-  private val menuClickListener: (View, ConnectionData) -> Unit
+  private val menuClickListener: (View, ConnectionData) -> Unit,
 ) : ListAdapter<ConnectionData, ConnectionViewHolder>(ConnectionDifferential) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConnectionViewHolder =
@@ -178,7 +177,7 @@ private class ConnectionAdapter(
   }
 
   inner class ConnectionViewHolder(
-    private val binding: ItemConnectionBinding
+    private val binding: ItemConnectionBinding,
   ) : ViewHolder(binding.root) {
     private lateinit var entity: ConnectionData
 

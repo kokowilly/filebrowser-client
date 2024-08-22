@@ -14,4 +14,5 @@
   <string name="test_connection">Test Connection</string>
   <string name="connection_success">"Connection Configuration tested successfully</string>
   <string name="error_connection">Could not connect to %1$s, Please check your configuration.</string>
+  <string name="message_connection_success">Connected successfully.</string>
 </resources>
