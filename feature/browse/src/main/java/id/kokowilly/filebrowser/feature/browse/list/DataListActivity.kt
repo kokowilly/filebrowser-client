@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
@@ -200,9 +201,9 @@ private class DataListAdapter(
 
     fun bind(entity: Resource.ImageResource) {
       this.resource = entity
-      binding.itemThumbnail.setImageResource(resource.iconResource)
-      binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
-//      binding.itemThumbnail.setImageURI(Uri.parse(entity.path))
+//      binding.itemThumbnail.setImageResource(resource.iconResource)
+//      binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
+      binding.itemThumbnail.load(resource.thumbnail)
       binding.itemLabel.text = entity.name
     }
   }

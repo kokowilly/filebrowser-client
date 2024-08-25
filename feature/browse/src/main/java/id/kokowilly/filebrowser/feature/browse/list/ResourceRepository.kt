@@ -15,6 +15,8 @@ internal interface ResourceRepository {
 internal class ResourceRepositoryImpl(
   private val dataService: DataService,
   private val dispatcher: CoroutineDispatcher,
+  private val baseUrl: String,
+  private val auth: String,
 ) : ResourceRepository {
   override suspend fun getUsage(): UsageResponse = withContext(dispatcher) {
     dataService.usage()
@@ -24,12 +26,14 @@ internal class ResourceRepositoryImpl(
     dataService.directory(path).items
       .map {
         when {
-          it.type == "image" -> Resource.ImageResource(it)
+          it.type == "image" -> Resource.ImageResource(it, buildThumbnailUrl(it.path))
           it.isDir -> Resource.FolderResource(it)
           else -> Resource.IconResource(it)
         }
       }
   }
+
+  private fun buildThumbnailUrl(path: String): String = "${baseUrl}api/preview/thumb/$path?auth=$auth&inline=true&key=${System.currentTimeMillis()}"
 }
 
 sealed interface Resource {
@@ -47,19 +51,20 @@ sealed interface Resource {
     val iconColor: Int,
     val thumbnail: String,
   ) : Resource {
-    constructor(response: ItemResponse, iconAndColor: Pair<Int, Int>) : this(
+    constructor(response: ItemResponse, iconAndColor: Pair<Int, Int>, thumbnailUrl: String) : this(
       name = response.name,
       path = response.path,
       size = response.size,
       extension = response.extension,
       iconResource = iconAndColor.first,
       iconColor = iconAndColor.second,
-      thumbnail = response.path
+      thumbnail = thumbnailUrl
     )
 
-    constructor(response: ItemResponse) : this(
+    constructor(response: ItemResponse, thumbnailUrl: String) : this(
       response = response,
-      iconAndColor = IconsAndColors.getIconAndColor(response.extension)
+      iconAndColor = IconsAndColors.getIconAndColor(response.extension),
+      thumbnailUrl = thumbnailUrl,
     )
   }
 

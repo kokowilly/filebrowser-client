@@ -10,6 +10,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.net.HttpURLConnection
 
+typealias Callback = (OkHttpClient) -> Unit
+
 interface NetworkFactory {
   fun <T> build(service: Class<T>): T
 }
@@ -19,14 +21,20 @@ inline fun <reified T : Any> NetworkFactory.build(): T = build(T::class.java)
 interface NetworkController : NetworkFactory {
   fun initialize(baseUrl: String)
 
+  fun requestInjectNetworkClient(callback: Callback)
+
   fun setRefreshToken(refreshToken: () -> String)
 
   fun setAccessToken(accessToken: String)
+
+  val baseUrl: String
+
+  val accessToken: String
 }
 
 class NetworkControllerImpl(
-  private val okhttp: OkHttpClient,
-  private val moshi: Moshi
+  okhttp: OkHttpClient,
+  private val moshi: Moshi,
 ) : NetworkController {
   private lateinit var retrofit: Retrofit
 
@@ -36,7 +44,8 @@ class NetworkControllerImpl(
     this.refreshToken = refreshToken
   }
 
-  private var accessToken: String = ""
+  override var accessToken: String = ""
+    private set
 
   private val interceptor = object : Interceptor {
     private fun execute(chain: Chain): Response {
@@ -61,14 +70,21 @@ class NetworkControllerImpl(
     }
   }
 
+  private val internalOkHttpClient = okhttp.newBuilder()
+    .addInterceptor(interceptor)
+    .build()
+
+  //TODO: refactor
+  override fun requestInjectNetworkClient(callback: Callback) {
+    callback.invoke(internalOkHttpClient)
+  }
+
+  override val baseUrl: String get() = retrofit.baseUrl().toString()
+
   override fun initialize(baseUrl: String) {
     retrofit = Retrofit.Builder()
       .baseUrl(baseUrl)
-      .client(
-        okhttp.newBuilder()
-          .addInterceptor(interceptor)
-          .build()
-      )
+      .client(internalOkHttpClient)
       .addConverterFactory(ScalarsConverterFactory.create())
       .addConverterFactory(MoshiConverterFactory.create(moshi))
       .build()

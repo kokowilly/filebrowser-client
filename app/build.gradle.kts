@@ -46,6 +46,10 @@ dependencies {
   implementation(libs.koin.core)
   implementation(libs.koin.android)
 
+  implementation(libs.coil)
+  implementation(libs.coil.gif)
+  implementation(libs.coil.svg)
+
   implementation(libs.androidx.multidex)
 
   implementation(libs.androidx.core.ktx)
