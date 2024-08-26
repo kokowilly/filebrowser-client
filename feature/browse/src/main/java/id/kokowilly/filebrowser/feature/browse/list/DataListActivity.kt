@@ -201,9 +201,20 @@ private class DataListAdapter(
 
     fun bind(entity: Resource.ImageResource) {
       this.resource = entity
-//      binding.itemThumbnail.setImageResource(resource.iconResource)
-//      binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
-      binding.itemThumbnail.load(resource.thumbnail)
+      binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
+      binding.itemThumbnail.load(resource.thumbnail) {
+        placeholder(resource.iconResource)
+        fallback(resource.iconResource)
+        crossfade(true)
+        listener(
+          onSuccess = { _, _ ->
+            binding.itemThumbnail.clearColorFilter()
+          },
+          onStart = { _ ->
+            binding.itemThumbnail.setColorFilter(itemView.getColor(resource.iconColor))
+          })
+
+      }
       binding.itemLabel.text = entity.name
     }
   }
