@@ -5,6 +5,8 @@ import id.kokowilly.filebrowser.feature.browse.list.DataListActivity
 import id.kokowilly.filebrowser.feature.browse.list.DataListViewModel
 import id.kokowilly.filebrowser.feature.browse.list.ResourceRepository
 import id.kokowilly.filebrowser.feature.browse.list.ResourceRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepository
+import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepositoryImpl
 import id.kokowilly.filebrowser.lib.navigation.Navigation
 import id.kokowilly.filebrowser.lib.navigation.NavigationLibrary
 import id.kokowilly.filebrowser.lib.network.NetworkController
@@ -14,7 +16,7 @@ import org.koin.dsl.module
 
 val featureBrowseModule = module {
   factory<ResourceRepository> {
-    val networkController : NetworkController = get()
+    val networkController: NetworkController = get()
     ResourceRepositoryImpl(
       dataService = get(),
       dispatcher = Dispatchers.IO,
@@ -24,6 +26,14 @@ val featureBrowseModule = module {
   }
 
   viewModel { DataListViewModel(get()) }
+
+  factory<PreviewRepository> {
+    val networkController: NetworkController = get()
+    PreviewRepositoryImpl(
+      baseUrl = networkController.baseUrl,
+      auth = networkController.accessToken,
+    )
+  }
 }
 
 val featureBrowseLibrary

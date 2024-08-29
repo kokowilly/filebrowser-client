@@ -1,5 +1,6 @@
 package id.kokowilly.filebrowser.feature.browse.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import coil.load
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
+import id.kokowilly.filebrowser.feature.browse.preview.PreviewActivity
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import kotlinx.coroutines.flow.map
@@ -37,6 +39,13 @@ class DataListActivity : ImmersiveActivity() {
       when (it) {
         is Resource.FolderResource ->
           viewModel.go(it.path)
+
+        is Resource.ImageResource -> {
+          startActivity(
+            Intent(this, PreviewActivity::class.java)
+              .putExtra(PreviewActivity.EXTRA_PATH, it.path)
+          )
+        }
 
         else -> Unit
       }
