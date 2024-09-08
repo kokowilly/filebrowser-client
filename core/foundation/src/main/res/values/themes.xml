@@ -1,8 +1,10 @@
 <resources>
   <!-- Base application theme. -->
-  <style name="Base.Theme.FileBrowser" parent="Theme.Material3.DayNight.NoActionBar">
+  <style name="Base.Theme.FileBrowser" parent="Theme.MaterialComponents.DayNight.NoActionBar">
     <item name="colorPrimary">@color/light_blue_600</item>
     <item name="colorPrimaryDark">@color/light_blue_900</item>
+    <item name="colorSecondary">@color/light_blue_600</item>
+    <item name="colorOnSecondary">#ffffff</item>
     <item name="colorAccent">@color/steel__900</item>
     <item name="android:windowNoTitle">true</item>
     <item name="windowActionBar">false</item>

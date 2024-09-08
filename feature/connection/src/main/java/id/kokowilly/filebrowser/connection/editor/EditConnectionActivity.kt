@@ -2,6 +2,9 @@ package id.kokowilly.filebrowser.connection.editor
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import id.kokowilly.filebrowser.connection.R
 import id.kokowilly.filebrowser.connection.database.entity.Connection
@@ -29,6 +32,18 @@ class EditConnectionActivity : ImmersiveActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(binding.root)
+
+    ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+      val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+      view.updatePadding(
+        bottom = systemBarsInsets.bottom,
+        top = systemBarsInsets.top,
+        left = systemBarsInsets.left,
+        right = systemBarsInsets.right,
+      )
+      insets
+    }
+
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {

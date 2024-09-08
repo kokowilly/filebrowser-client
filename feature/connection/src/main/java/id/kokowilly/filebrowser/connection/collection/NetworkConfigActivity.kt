@@ -55,7 +55,9 @@ class NetworkConfigActivity : ImmersiveActivity() {
       val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
       view.updatePadding(
         bottom = systemBarsInsets.bottom,
-        top = systemBarsInsets.top
+        top = systemBarsInsets.top,
+        left = systemBarsInsets.left,
+        right = systemBarsInsets.right,
       )
       insets
     }

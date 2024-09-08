@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".list.DataListActivity">
 
   <androidx.appcompat.widget.AppCompatImageView
       android:id="@+id/image_banner"
@@ -40,6 +41,7 @@
       android:layout_marginBottom="@dimen/vertical_margin"
       android:elevation="8dp"
       android:lines="2"
+      android:textColor="#FFFFFF"
       app:layout_constraintBottom_toTopOf="@id/bar_usage"
       app:layout_constraintEnd_toStartOf="@id/text_usage"
       app:layout_constraintStart_toStartOf="@id/bar_usage"
@@ -52,6 +54,7 @@
       android:layout_height="wrap_content"
       android:elevation="8dp"
       android:lines="1"
+      android:textColor="#FFFFFF"
       app:layout_constraintEnd_toEndOf="@id/bar_usage"
       app:layout_constraintTop_toTopOf="@id/text_path"
       tools:text="1000/2000" />

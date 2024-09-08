@@ -56,10 +56,13 @@ class DataListActivity : ImmersiveActivity() {
     super.onCreate(savedInstanceState)
     setContentView(binding.root)
 
-    ViewCompat.setOnApplyWindowInsetsListener(binding.listData) { view, insets ->
+    ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
       val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
       view.updatePadding(
-        bottom = systemBarsInsets.bottom
+        bottom = systemBarsInsets.bottom,
+        top = 0,
+        left = systemBarsInsets.left,
+        right = systemBarsInsets.right,
       )
       insets
     }

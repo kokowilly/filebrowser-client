@@ -21,7 +21,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/button_save"
-      style="@style/Widget.Material3.Button.OutlinedButton"
+      style="@style/Widget.MaterialComponents.Button.OutlinedButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginHorizontal="@dimen/horizontal_margin"
@@ -32,7 +32,7 @@
 
   <com.google.android.material.button.MaterialButton
       android:id="@+id/button_test"
-      style="@style/Widget.Material3.Button.OutlinedButton"
+      style="@style/Widget.MaterialComponents.Button.OutlinedButton"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginHorizontal="@dimen/horizontal_margin"
@@ -44,11 +44,9 @@
   <ScrollView
       android:id="@+id/scrollInputs"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/textTitle"
-      android:layout_alignParentBottom="true"
+      android:layout_height="0dp"
       android:paddingHorizontal="@dimen/horizontal_margin"
-      android:paddingBottom="64dp"
+      app:layout_constraintBottom_toTopOf="@id/button_save"
       app:layout_constraintTop_toBottomOf="@id/textTitle">
 
     <RelativeLayout
