@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -19,9 +18,11 @@ import coil.load
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
+import id.kokowilly.filebrowser.feature.browse.list.menu.download.ListMenuDialog
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewActivity
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
+import id.kokowilly.filebrowser.foundation.style.getColor
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,7 +48,7 @@ class DataListActivity : ImmersiveActivity() {
           )
         }
 
-        else -> Unit
+        else -> openMenu(it)
       }
     }
   )
@@ -119,6 +120,10 @@ class DataListActivity : ImmersiveActivity() {
       }
       .setCancelable(true)
       .show()
+  }
+
+  private fun openMenu(resource: Resource) {
+    ListMenuDialog.start(this, resource)
   }
 
   private val backDispatcher = object : OnBackPressedCallback(true) {
@@ -260,9 +265,3 @@ private class DataListAdapter(
 private const val TYPE_FOLDER = 0
 private const val TYPE_IMAGE = 1
 private const val TYPE_ICON = 2
-
-private fun View.getColor(color: Int): Int = ResourcesCompat.getColor(
-  resources,
-  color,
-  null
-)
