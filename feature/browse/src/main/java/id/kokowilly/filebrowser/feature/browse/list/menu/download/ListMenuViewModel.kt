@@ -1,34 +1,30 @@
 package id.kokowilly.filebrowser.feature.browse.list.menu.download
 
-import android.app.DownloadManager
-import android.content.Context
 import android.net.Uri
-import android.os.Environment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import id.kokowilly.filebrowser.lib.network.NetworkController
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import java.io.File
 
 class ListMenuViewModel(
   private val networkController: NetworkController,
 ) : ViewModel() {
 
-  fun startDownload(context: Context, path: String) {
-    val file = File(path)
-    val downloadUrl = makeUrl(path)
+  private val _command = MutableSharedFlow<Command>()
+  val command: Flow<Command> = _command
 
-    val request = DownloadManager.Request(Uri.parse(downloadUrl))
-      .setTitle("File Download")
-      .setDescription("Downloading...")
-      .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-      .setAllowedOverMetered(true)  // Allow mobile data downloads
-      .setAllowedOverRoaming(true)  // Allow roaming downloads
-      .setDestinationInExternalPublicDir(
-        Environment.DIRECTORY_DOWNLOADS,
-        file.name
-      ) // Change filename and extension
-
-    val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-    downloadManager.enqueue(request)
+  fun startDownload(path: String) {
+    viewModelScope.launch {
+      _command.emit(
+        Command.Download(
+          file = File(path),
+          url = Uri.parse(makeUrl(path)),
+        )
+      )
+    }
   }
 
   private fun makeUrl(path: String): String {
@@ -37,5 +33,9 @@ class ListMenuViewModel(
       path +
       "?auth=" +
       networkController.accessToken
+  }
+
+  sealed interface Command {
+    class Download(val file: File, val url: Uri) : Command
   }
 }
