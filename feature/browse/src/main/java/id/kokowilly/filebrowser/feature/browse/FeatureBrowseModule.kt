@@ -5,6 +5,7 @@ import id.kokowilly.filebrowser.feature.browse.list.DataListActivity
 import id.kokowilly.filebrowser.feature.browse.list.DataListViewModel
 import id.kokowilly.filebrowser.feature.browse.list.ResourceRepository
 import id.kokowilly.filebrowser.feature.browse.list.ResourceRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.list.menu.download.ListMenuViewModel
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepository
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepositoryImpl
 import id.kokowilly.filebrowser.lib.navigation.Navigation
@@ -34,6 +35,8 @@ val featureBrowseModule = module {
       auth = networkController.accessToken,
     )
   }
+
+  viewModel { ListMenuViewModel(get()) }
 }
 
 val featureBrowseLibrary
