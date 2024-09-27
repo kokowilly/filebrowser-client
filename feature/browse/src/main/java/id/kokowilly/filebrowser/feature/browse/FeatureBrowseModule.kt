@@ -1,11 +1,11 @@
 package id.kokowilly.filebrowser.feature.browse
 
 import android.content.Intent
-import id.kokowilly.filebrowser.feature.browse.list.DataListActivity
-import id.kokowilly.filebrowser.feature.browse.list.DataListViewModel
-import id.kokowilly.filebrowser.feature.browse.list.ResourceRepository
-import id.kokowilly.filebrowser.feature.browse.list.ResourceRepositoryImpl
-import id.kokowilly.filebrowser.feature.browse.list.menu.download.ListMenuViewModel
+import id.kokowilly.filebrowser.feature.browse.browse.BrowseActivity
+import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
+import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
+import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.browse.menu.download.ListMenuViewModel
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepository
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepositoryImpl
 import id.kokowilly.filebrowser.lib.navigation.Navigation
@@ -26,7 +26,7 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { DataListViewModel(get()) }
+  viewModel { BrowseViewModel(get()) }
 
   factory<PreviewRepository> {
     val networkController: NetworkController = get()
@@ -42,6 +42,6 @@ val featureBrowseModule = module {
 val featureBrowseLibrary
   get() = NavigationLibrary {
     Navigation.register("browse:list") { context, _ ->
-      Intent(context, DataListActivity::class.java)
+      Intent(context, BrowseActivity::class.java)
     }
   }

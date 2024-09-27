@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list.menu.download
+package id.kokowilly.filebrowser.feature.browse.browse.menu.download
 
 import android.app.DownloadManager
 import android.content.Context
@@ -14,8 +14,8 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.kokowilly.filebrowser.feature.browse.R
+import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.databinding.FragmentListMenuBinding
-import id.kokowilly.filebrowser.feature.browse.list.Resource
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File

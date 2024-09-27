@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list.menu.download
+package id.kokowilly.filebrowser.feature.browse.browse.menu.download
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel

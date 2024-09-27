@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list
+package id.kokowilly.filebrowser.feature.browse.browse
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-internal class DataListViewModel(
+internal class BrowseViewModel(
   private val repository: ResourceRepository
 ) : ViewModel() {
   private val statePath = MutableStateFlow("")

@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list
+package id.kokowilly.filebrowser.feature.browse.browse
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import id.kokowilly.filebrowser.feature.browse.R
-import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
+import id.kokowilly.filebrowser.feature.browse.browse.menu.download.ListMenuDialog
+import id.kokowilly.filebrowser.feature.browse.databinding.ActivityBrowseBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
-import id.kokowilly.filebrowser.feature.browse.list.menu.download.ListMenuDialog
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewActivity
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
@@ -28,18 +28,18 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import id.kokowilly.filebrowser.foundation.R as CoreR
 
-class DataListActivity : ImmersiveActivity() {
-  private val binding: ActivityDataListBinding by lazy {
-    ActivityDataListBinding.inflate(layoutInflater)
+class BrowseActivity : ImmersiveActivity() {
+  private val binding: ActivityBrowseBinding by lazy {
+    ActivityBrowseBinding.inflate(layoutInflater)
   }
 
-  private val viewModel: DataListViewModel by viewModel()
+  private val vm: BrowseViewModel by viewModel()
 
   private val adapter = DataListAdapter(
     itemClickListener = {
       when (it) {
         is Resource.FolderResource ->
-          viewModel.go(it.path)
+          vm.go(it.path)
 
         is Resource.ImageResource -> {
           startActivity(
@@ -75,7 +75,7 @@ class DataListActivity : ImmersiveActivity() {
     onBackPressedDispatcher.addCallback(backDispatcher)
 
     lifecycleScope.launch {
-      viewModel.usage.collect {
+      vm.usage.collect {
         runCatching {
           val percentage = ((it.used * 100) / it.total).toInt()
 
@@ -88,13 +88,13 @@ class DataListActivity : ImmersiveActivity() {
     }
 
     lifecycleScope.launch {
-      viewModel.path.collect {
+      vm.path.collect {
         binding.textPath.text = it.ifBlank { "/" }
       }
     }
 
     lifecycleScope.launch {
-      viewModel.files
+      vm.files
         .map { items ->
           items.sortedWith(
             compareBy<Resource> { it !is Resource.FolderResource }
@@ -128,8 +128,8 @@ class DataListActivity : ImmersiveActivity() {
 
   private val backDispatcher = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
-      if (viewModel.path.value.isNotEmpty()) {
-        viewModel.up()
+      if (vm.path.value.isNotEmpty()) {
+        vm.up()
       } else {
         showExitConfirmationDialog()
       }

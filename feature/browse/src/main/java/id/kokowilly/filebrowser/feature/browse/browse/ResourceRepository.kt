@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list
+package id.kokowilly.filebrowser.feature.browse.browse
 
 import id.kokowilly.filebrowser.lib.network.api.DataService
 import id.kokowilly.filebrowser.lib.network.api.ItemResponse
