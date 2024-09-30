@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import id.kokowilly.filebrowser.feature.browse.R
-import id.kokowilly.filebrowser.feature.browse.browse.menu.download.ListMenuDialog
+import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityBrowseBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewActivity
@@ -123,7 +123,7 @@ class BrowseActivity : ImmersiveActivity() {
   }
 
   private fun openMenu(resource: Resource) {
-    ListMenuDialog.start(this, resource)
+    ItemOptionDialog.start(this, resource)
   }
 
   private val backDispatcher = object : OnBackPressedCallback(true) {

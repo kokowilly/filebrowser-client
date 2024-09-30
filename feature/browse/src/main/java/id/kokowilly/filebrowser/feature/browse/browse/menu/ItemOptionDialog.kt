@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.browse.menu.download
+package id.kokowilly.filebrowser.feature.browse.browse.menu
 
 import android.app.DownloadManager
 import android.content.Context
@@ -15,15 +15,15 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
-import id.kokowilly.filebrowser.feature.browse.databinding.FragmentListMenuBinding
+import id.kokowilly.filebrowser.feature.browse.databinding.DialogItemOptionBinding
+import id.kokowilly.filebrowser.feature.browse.target.BrowseTargetDialog
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
+class ItemOptionDialog : BottomSheetDialogFragment() {
 
-class ListMenuDialog : BottomSheetDialogFragment() {
-
-  private var _binding: FragmentListMenuBinding? = null
+  private var _binding: DialogItemOptionBinding? = null
   private val binding get() = _binding!!
 
   override fun onCreateView(
@@ -31,7 +31,7 @@ class ListMenuDialog : BottomSheetDialogFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?,
   ): View {
-    return FragmentListMenuBinding.inflate(inflater, container, false).also {
+    return DialogItemOptionBinding.inflate(inflater, container, false).also {
       _binding = it
     }.root
   }
@@ -43,7 +43,7 @@ class ListMenuDialog : BottomSheetDialogFragment() {
 
   private val path: String? by lazy { arguments?.getString(EXTRA_PATH) }
 
-  private val vm: ListMenuViewModel by viewModel()
+  private val vm: ItemOptionViewModel by viewModel()
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     path.also { filePath ->
@@ -55,14 +55,23 @@ class ListMenuDialog : BottomSheetDialogFragment() {
         binding.menuDownload.setOnClickListener {
           vm.startDownload(filePath)
         }
+
+        binding.menuMove.setOnClickListener {
+          vm.startMove(filePath)
+        }
       }
     }
 
     lifecycleScope.launch {
       vm.command.collect { command ->
         when (command) {
-          is ListMenuViewModel.Command.Download -> {
-            downloadFile(command.file, command.url)
+          is ItemOptionViewModel.Command.Download -> {
+            downloadFile(command.filename, command.url)
+            dismiss()
+          }
+
+          is ItemOptionViewModel.Command.Move -> {
+            BrowseTargetDialog().show(parentFragmentManager, "BrowseTargetDialog")
             dismiss()
           }
         }
@@ -70,17 +79,17 @@ class ListMenuDialog : BottomSheetDialogFragment() {
     }
   }
 
-  private fun downloadFile(file: File, url: Uri) {
+  private fun downloadFile(filename: String, url: Uri) {
     val context = requireContext()
 
     (context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(
       DownloadManager.Request(url)
         .setTitle(getString(R.string.title_downloading))
-        .setDescription(getString(R.string.message_downloading, file.name))
+        .setDescription(getString(R.string.message_downloading, filename))
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         .setAllowedOverMetered(true)
         .setAllowedOverRoaming(true)
-        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, file.name)
+        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
     )
 
     Toast.makeText(
@@ -92,7 +101,7 @@ class ListMenuDialog : BottomSheetDialogFragment() {
 
   companion object {
     fun start(activity: AppCompatActivity, resource: Resource) {
-      ListMenuDialog().apply {
+      ItemOptionDialog().apply {
         arguments = bundleOf(
           EXTRA_PATH to resource.path
         )
