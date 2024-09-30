@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,6 +21,7 @@ import id.kokowilly.filebrowser.foundation.style.getColor
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import id.kokowilly.filebrowser.foundation.R as CoreR
 
 class BrowseTargetDialog : BottomSheetDialogFragment() {
@@ -50,6 +53,14 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
     _binding = null
   }
 
+  private val source by lazy {
+    File(arguments?.getString(EXTRA_PATH).orEmpty())
+  }
+
+  private val fileName get() = source.name
+
+  private val parentPath get() = source.parent.orEmpty()
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.listData.adapter = adapter
@@ -72,8 +83,22 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
           adapter.submitList(it)
         }
     }
+
+    vm.go(parentPath)
+  }
+
+  companion object {
+    fun start(fragmentManager: FragmentManager, filePath: String) {
+      BrowseTargetDialog().apply {
+        arguments = bundleOf(
+          EXTRA_PATH to filePath
+        )
+      }.show(fragmentManager, "BrowseTargetDialog")
+    }
   }
 }
+
+private const val EXTRA_PATH = "path"
 
 private class ListItemAdapter(
   private val itemClickListener: (Resource) -> Unit,

@@ -5,6 +5,7 @@
 
   <string name="menu_download">Download</string>
   <string name="menu_move">Move</string>
+  <string name="menu_confirm">Confirm</string>
 
   <string name="message_download_in_progress">Download in progress, check your notification.</string>
   <string name="message_downloading">Downloading %1$s</string>

@@ -71,7 +71,7 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
           }
 
           is ItemOptionViewModel.Command.Move -> {
-            BrowseTargetDialog().show(parentFragmentManager, "BrowseTargetDialog")
+            BrowseTargetDialog.start(parentFragmentManager, command.filePath)
             dismiss()
           }
         }
@@ -105,7 +105,7 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
         arguments = bundleOf(
           EXTRA_PATH to resource.path
         )
-      }.show(activity.supportFragmentManager, "ListMenuDialog")
+      }.show(activity.supportFragmentManager, "ItemOptionDialog")
     }
   }
 }
