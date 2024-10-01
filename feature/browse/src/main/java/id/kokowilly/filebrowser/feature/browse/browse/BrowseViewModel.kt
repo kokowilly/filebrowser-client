@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 internal class BrowseViewModel(
-  private val repository: ResourceRepository
+  private val repository: ResourceRepository,
 ) : ViewModel() {
   private val statePath = MutableStateFlow("")
   val path: StateFlow<String> = statePath
@@ -25,9 +25,9 @@ internal class BrowseViewModel(
     }
 
     viewModelScope.launch {
-      path.collect {
-        repository.getResource(it).also {
-          stateFiles.emit(it)
+      path.collect { path ->
+        repository.getResource(path).also { resources ->
+          stateFiles.emit(resources)
         }
       }
     }
