@@ -18,6 +18,7 @@ import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogTargetBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileListBinding
 import id.kokowilly.filebrowser.foundation.style.getColor
+import id.kokowilly.filebrowser.foundation.style.halfExpand
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,6 +65,7 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.listData.adapter = adapter
+    halfExpand()
 
     lifecycleScope.launch {
       vm.path.collect {
