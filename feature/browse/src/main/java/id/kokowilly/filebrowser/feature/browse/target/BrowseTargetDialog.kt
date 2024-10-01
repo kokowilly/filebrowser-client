@@ -34,6 +34,7 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
 
   private val adapter = ListItemAdapter(
     itemClickListener = {
+      if (it is Resource.FolderResource) vm.go(it.path)
     }
   )
 
