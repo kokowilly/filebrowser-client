@@ -8,6 +8,9 @@ import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepositoryImpl
 import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionViewModel
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepository
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.target.ActionRepository
+import id.kokowilly.filebrowser.feature.browse.target.ActionRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.target.BrowseTargetViewModel
 import id.kokowilly.filebrowser.lib.navigation.Navigation
 import id.kokowilly.filebrowser.lib.navigation.NavigationLibrary
 import id.kokowilly.filebrowser.lib.network.NetworkController
@@ -37,6 +40,15 @@ val featureBrowseModule = module {
   }
 
   viewModel { ItemOptionViewModel(get()) }
+
+  factory<ActionRepository> {
+    ActionRepositoryImpl(
+      fileModificationService = get(),
+      dispatcher = Dispatchers.IO,
+    )
+  }
+
+  viewModel { BrowseTargetViewModel(get(), get()) }
 }
 
 val featureBrowseLibrary

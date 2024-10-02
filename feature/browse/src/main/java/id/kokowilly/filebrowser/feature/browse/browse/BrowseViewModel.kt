@@ -7,17 +7,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-internal class BrowseViewModel(
+internal open class BrowseViewModel(
   private val repository: ResourceRepository,
 ) : ViewModel() {
   private val statePath = MutableStateFlow("")
-  val path: StateFlow<String> = statePath
+  val path: StateFlow<String> get() = statePath
 
   private val stateUsage = MutableStateFlow(UsageResponse.EMPTY)
-  val usage: StateFlow<UsageResponse> = stateUsage
+  val usage: StateFlow<UsageResponse> get() = stateUsage
 
   private val stateFiles = MutableStateFlow<List<Resource>>(emptyList())
-  val files: StateFlow<List<Resource>> = stateFiles
+  val files: StateFlow<List<Resource>> get() = stateFiles
 
   init {
     viewModelScope.launch {
@@ -34,7 +34,9 @@ internal class BrowseViewModel(
   }
 
   fun go(path: String) {
-    statePath.tryEmit(path)
+    viewModelScope.launch {
+      statePath.emit(path.trim('/'))
+    }
   }
 
   fun up() {
