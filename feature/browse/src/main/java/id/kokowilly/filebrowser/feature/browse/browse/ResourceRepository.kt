@@ -34,10 +34,10 @@ internal class ResourceRepositoryImpl(
   }
 
   private fun getParent(path: String) =
-    if (path.count { '/' == it } == 0) emptyList<Resource>() else listOf(
+    if (path == "/") emptyList<Resource>() else listOf(
       Resource.FolderResource(
         name = "..",
-        path = path.substringBeforeLast('/', ""),
+        path = path.substringBeforeLast('/', "").ifEmpty { "/" },
         size = 0,
         extension = "",
       )

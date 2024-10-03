@@ -35,22 +35,24 @@ class BrowseActivity : ImmersiveActivity() {
 
   private val vm: BrowseViewModel by viewModel()
 
-  private val adapter = DataListAdapter(
-    itemClickListener = {
-      when (it) {
-        is Resource.FolderResource ->
-          vm.go(it.path)
+  private val itemClickListener: (Resource) -> Unit = {
+    when (it) {
+      is Resource.FolderResource ->
+        vm.go(it.path)
 
-        is Resource.ImageResource -> {
-          startActivity(
-            Intent(this, PreviewActivity::class.java)
-              .putExtra(PreviewActivity.EXTRA_PATH, it.path)
-          )
-        }
-
-        else -> openMenu(it)
+      is Resource.ImageResource -> {
+        startActivity(
+          Intent(this, PreviewActivity::class.java)
+            .putExtra(PreviewActivity.EXTRA_PATH, it.path)
+        )
       }
+
+      else -> openMenu(it)
     }
+  }
+
+  private val adapter = DataListAdapter(
+    itemClickListener = itemClickListener
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,8 +130,9 @@ class BrowseActivity : ImmersiveActivity() {
 
   private val backDispatcher = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
-      if (vm.path.value.isNotEmpty()) {
-        vm.up()
+      val firstItem = vm.files.value.firstOrNull()
+      if (firstItem is Resource.FolderResource && firstItem.name == "..") {
+        itemClickListener.invoke(firstItem)
       } else {
         showExitConfirmationDialog()
       }
