@@ -1,13 +1,16 @@
 package id.kokowilly.filebrowser.feature.browse
 
 import android.content.Intent
-import id.kokowilly.filebrowser.feature.browse.list.DataListActivity
-import id.kokowilly.filebrowser.feature.browse.list.DataListViewModel
-import id.kokowilly.filebrowser.feature.browse.list.ResourceRepository
-import id.kokowilly.filebrowser.feature.browse.list.ResourceRepositoryImpl
-import id.kokowilly.filebrowser.feature.browse.list.menu.download.ListMenuViewModel
+import id.kokowilly.filebrowser.feature.browse.browse.BrowseActivity
+import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
+import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
+import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionViewModel
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepository
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.target.ActionRepository
+import id.kokowilly.filebrowser.feature.browse.target.ActionRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.target.BrowseTargetViewModel
 import id.kokowilly.filebrowser.lib.navigation.Navigation
 import id.kokowilly.filebrowser.lib.navigation.NavigationLibrary
 import id.kokowilly.filebrowser.lib.network.NetworkController
@@ -26,7 +29,7 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { DataListViewModel(get()) }
+  viewModel { BrowseViewModel(get()) }
 
   factory<PreviewRepository> {
     val networkController: NetworkController = get()
@@ -36,12 +39,23 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { ListMenuViewModel(get()) }
+  viewModel { ItemOptionViewModel(get()) }
+
+  factory<ActionRepository> {
+    ActionRepositoryImpl(
+      fileModificationService = get(),
+      dispatcher = Dispatchers.IO,
+    )
+  }
+
+  viewModel { BrowseTargetViewModel(get(), get(), get()) }
+
+  single { BrowseNotificationChannel() }
 }
 
 val featureBrowseLibrary
   get() = NavigationLibrary {
     Navigation.register("browse:list") { context, _ ->
-      Intent(context, DataListActivity::class.java)
+      Intent(context, BrowseActivity::class.java)
     }
   }

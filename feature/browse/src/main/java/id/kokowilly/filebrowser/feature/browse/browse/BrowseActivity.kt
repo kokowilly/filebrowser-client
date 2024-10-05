@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list
+package id.kokowilly.filebrowser.feature.browse.browse
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,42 +15,48 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.R
-import id.kokowilly.filebrowser.feature.browse.databinding.ActivityDataListBinding
+import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionDialog
+import id.kokowilly.filebrowser.feature.browse.databinding.ActivityBrowseBinding
 import id.kokowilly.filebrowser.feature.browse.databinding.ItemFileThumbnailBinding
-import id.kokowilly.filebrowser.feature.browse.list.menu.download.ListMenuDialog
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewActivity
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import id.kokowilly.filebrowser.foundation.style.getColor
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import id.kokowilly.filebrowser.foundation.R as CoreR
 
-class DataListActivity : ImmersiveActivity() {
-  private val binding: ActivityDataListBinding by lazy {
-    ActivityDataListBinding.inflate(layoutInflater)
+class BrowseActivity : ImmersiveActivity() {
+  private val binding: ActivityBrowseBinding by lazy {
+    ActivityBrowseBinding.inflate(layoutInflater)
   }
 
-  private val viewModel: DataListViewModel by viewModel()
+  private val vm: BrowseViewModel by viewModel()
+
+  private val channel: BrowseNotificationChannel by inject()
+
+  private val itemClickListener: (Resource) -> Unit = {
+    when (it) {
+      is Resource.FolderResource ->
+        vm.go(BrowseViewModel.PathRequest(it.path, BrowseViewModel.PathRequest.Origin.UI))
+
+      is Resource.ImageResource -> {
+        startActivity(
+          Intent(this, PreviewActivity::class.java)
+            .putExtra(PreviewActivity.EXTRA_PATH, it.path)
+        )
+      }
+
+      else -> openMenu(it)
+    }
+  }
 
   private val adapter = DataListAdapter(
-    itemClickListener = {
-      when (it) {
-        is Resource.FolderResource ->
-          viewModel.go(it.path)
-
-        is Resource.ImageResource -> {
-          startActivity(
-            Intent(this, PreviewActivity::class.java)
-              .putExtra(PreviewActivity.EXTRA_PATH, it.path)
-          )
-        }
-
-        else -> openMenu(it)
-      }
-    }
+    itemClickListener = itemClickListener
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,26 +81,30 @@ class DataListActivity : ImmersiveActivity() {
     onBackPressedDispatcher.addCallback(backDispatcher)
 
     lifecycleScope.launch {
-      viewModel.usage.collect {
+      vm.usage.collect {
         runCatching {
           val percentage = ((it.used * 100) / it.total).toInt()
 
           binding.barUsage.progress = percentage
 
           binding.textUsage.text =
-            "${DataFormat.formatBytes(it.used)} / ${DataFormat.formatBytes(it.total)}"
+            getString(
+              R.string.format_usage,
+              DataFormat.formatBytes(it.used),
+              DataFormat.formatBytes(it.total)
+            )
         }
       }
     }
 
     lifecycleScope.launch {
-      viewModel.path.collect {
-        binding.textPath.text = it.ifBlank { "/" }
+      vm.path.collect {
+        binding.textPath.text = it.path.ifBlank { "/" }
       }
     }
 
     lifecycleScope.launch {
-      viewModel.files
+      vm.files
         .map { items ->
           items.sortedWith(
             compareBy<Resource> { it !is Resource.FolderResource }
@@ -103,6 +113,24 @@ class DataListActivity : ImmersiveActivity() {
         }
         .collect {
           adapter.submitList(it)
+        }
+    }
+
+    lifecycleScope.launch {
+      channel.command
+        .collect { command ->
+          when (command) {
+            is BrowseNotificationChannel.Command.Invalidate -> {
+              if (command.path == vm.path.value.path) {
+                vm.go(
+                  BrowseViewModel.PathRequest(
+                    command.path,
+                    BrowseViewModel.PathRequest.Origin.SYSTEM
+                  )
+                )
+              }
+            }
+          }
         }
     }
   }
@@ -123,13 +151,14 @@ class DataListActivity : ImmersiveActivity() {
   }
 
   private fun openMenu(resource: Resource) {
-    ListMenuDialog.start(this, resource)
+    ItemOptionDialog.start(this, resource)
   }
 
   private val backDispatcher = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
-      if (viewModel.path.value.isNotEmpty()) {
-        viewModel.up()
+      val firstItem = vm.files.value.firstOrNull()
+      if (firstItem is Resource.FolderResource && firstItem.name == "..") {
+        itemClickListener.invoke(firstItem)
       } else {
         showExitConfirmationDialog()
       }

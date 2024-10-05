@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".browse.BrowseActivity">
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/button_confirm"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentEnd="true"
+      android:layout_marginTop="@dimen/vertical_margin"
+      android:layout_marginEnd="@dimen/horizontal_margin"
+      android:text="@string/menu_confirm" />
+
+  <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/text_path"
+      style="@style/ShadowedText"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/horizontal_margin"
+      android:elevation="8dp"
+      android:gravity="center|start"
+      android:lines="2"
+      android:layout_alignTop="@id/button_confirm"
+      android:layout_alignBottom="@id/button_confirm"
+      android:layout_toStartOf="@id/button_confirm"
+      android:layout_alignParentStart="true"
+      tools:text="1000/2000" />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/list_data"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:clipToPadding="false"
+      android:orientation="vertical"
+      android:layout_alignParentBottom="true"
+      android:layout_below="@id/button_confirm"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      tools:itemCount="10"
+      tools:listitem="@layout/item_file_list" />
+
+</RelativeLayout>

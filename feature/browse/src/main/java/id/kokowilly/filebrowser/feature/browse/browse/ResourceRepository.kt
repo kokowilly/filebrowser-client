@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list
+package id.kokowilly.filebrowser.feature.browse.browse
 
 import id.kokowilly.filebrowser.lib.network.api.DataService
 import id.kokowilly.filebrowser.lib.network.api.ItemResponse
@@ -23,7 +23,7 @@ internal class ResourceRepositoryImpl(
   }
 
   override suspend fun getResource(path: String): List<Resource> = withContext(dispatcher) {
-    dataService.directory(path).items
+    getParent(path) + dataService.directory(path).items
       .map {
         when {
           it.type == "image" -> Resource.ImageResource(it, buildThumbnailUrl(it.path))
@@ -33,7 +33,18 @@ internal class ResourceRepositoryImpl(
       }
   }
 
-  private fun buildThumbnailUrl(path: String): String = "${baseUrl}api/preview/thumb/$path?auth=$auth&inline=true&key=${System.currentTimeMillis()}"
+  private fun getParent(path: String) =
+    if (path == "/") emptyList<Resource>() else listOf(
+      Resource.FolderResource(
+        name = "..",
+        path = path.substringBeforeLast('/', "").ifEmpty { "/" },
+        size = 0,
+        extension = "",
+      )
+    )
+
+  private fun buildThumbnailUrl(path: String): String =
+    "${baseUrl}api/preview/thumb/$path?auth=$auth&inline=true&key=${System.currentTimeMillis()}"
 }
 
 sealed interface Resource {

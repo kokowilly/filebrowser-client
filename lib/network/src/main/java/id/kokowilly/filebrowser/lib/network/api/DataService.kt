@@ -6,7 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface DataService {
-
   @GET("/api/resources/{path}")
   suspend fun directory(@Path("path") path: String?): PathResponse
 
@@ -19,7 +18,7 @@ data class UsageResponse(
   @field:Json(name = "total")
   val total: Long,
   @field:Json(name = "used")
-  val used: Long
+  val used: Long,
 ) {
   companion object {
     val EMPTY = UsageResponse(1L, 0L)

@@ -1,4 +1,4 @@
-package id.kokowilly.filebrowser.feature.browse.list.menu.download
+package id.kokowilly.filebrowser.feature.browse.browse.menu
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ListMenuViewModel(
+class ItemOptionViewModel(
   private val networkController: NetworkController,
 ) : ViewModel() {
 
@@ -20,8 +20,19 @@ class ListMenuViewModel(
     viewModelScope.launch {
       _command.emit(
         Command.Download(
-          file = File(path),
+          filename = File(path).name,
           url = Uri.parse(makeUrl(path)),
+        )
+      )
+    }
+  }
+
+  fun startMove(path: String) {
+    viewModelScope.launch {
+      _command.emit(
+        Command.Move(
+          filePath = path,
+          parentPath = File(path).parent.orEmpty(),
         )
       )
     }
@@ -36,6 +47,8 @@ class ListMenuViewModel(
   }
 
   sealed interface Command {
-    class Download(val file: File, val url: Uri) : Command
+    class Download(val filename: String, val url: Uri) : Command
+
+    class Move(val filePath: String, val parentPath: String) : Command
   }
 }
