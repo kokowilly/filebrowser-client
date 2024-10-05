@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogTargetBinding
@@ -70,7 +71,11 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
         .combine(
           vm.path.map { it.path.ifEmpty { "/" } }
         ) { source, path ->
-          "$source => $path"
+          getString(
+            R.string.format_move_title,
+            source,
+            path
+          )
         }.collect {
           binding.textPath.text = it
         }
@@ -94,14 +99,14 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
         when (it) {
           BrowseTargetViewModel.Command.Error -> Toast.makeText(
             requireContext(),
-            "Fail to move",
+            R.string.message_move_failed,
             Toast.LENGTH_SHORT
           )
 
           BrowseTargetViewModel.Command.Success -> {
             Toast.makeText(
               requireContext(),
-              "Success to move",
+              R.string.message_move_success,
               Toast.LENGTH_SHORT
             ).show()
             dismiss()

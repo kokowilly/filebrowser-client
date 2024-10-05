@@ -25,8 +25,6 @@ import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import id.kokowilly.filebrowser.foundation.style.getColor
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -90,7 +88,11 @@ class BrowseActivity : ImmersiveActivity() {
           binding.barUsage.progress = percentage
 
           binding.textUsage.text =
-            "${DataFormat.formatBytes(it.used)} / ${DataFormat.formatBytes(it.total)}"
+            getString(
+              R.string.format_usage,
+              DataFormat.formatBytes(it.used),
+              DataFormat.formatBytes(it.total)
+            )
         }
       }
     }

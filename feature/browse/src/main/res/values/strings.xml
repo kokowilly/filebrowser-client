@@ -13,4 +13,8 @@
 
   <string name="title_downloading">Downloading File</string>
   <string name="title_exit">Exit Confirmation</string>
+  <string name="format_usage">%1$s / %2$s</string>
+  <string name="message_move_failed">Fail to move</string>
+  <string name="message_move_success">Success to move</string>
+  <string name="format_move_title"><![CDATA[%1$s => %2$s]]></string>
 </resources>
