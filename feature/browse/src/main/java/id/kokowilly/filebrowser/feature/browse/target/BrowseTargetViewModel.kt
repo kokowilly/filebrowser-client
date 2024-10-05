@@ -1,6 +1,7 @@
 package id.kokowilly.filebrowser.feature.browse.target
 
 import androidx.lifecycle.viewModelScope
+import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,7 @@ import java.io.File
 internal class BrowseTargetViewModel(
   resourceRepository: ResourceRepository,
   private val actionRepository: ActionRepository,
+  private val notificationChannel: BrowseNotificationChannel,
 ) : BrowseViewModel(resourceRepository) {
   private lateinit var stateOriginalFile: StateFlow<File>
   val originalFile: StateFlow<File> get() = stateOriginalFile
@@ -24,10 +26,16 @@ internal class BrowseTargetViewModel(
       runCatching {
         actionRepository.move(
           original.absolutePath,
-          "${path.value}/${original.name}"
+          "${path.value.path}/${original.name}"
         )
       }.onSuccess {
         stateCommand.emit(Command.Success)
+        notificationChannel.emit(
+          BrowseNotificationChannel.Command.Invalidate(original.parent.orEmpty())
+        )
+        notificationChannel.emit(
+          BrowseNotificationChannel.Command.Invalidate(path.value.path)
+        )
       }.onFailure {
         stateCommand.emit(Command.Error)
       }
@@ -36,7 +44,12 @@ internal class BrowseTargetViewModel(
 
   fun initialize(source: File) {
     stateOriginalFile = MutableStateFlow(source)
-    go(source.parent.orEmpty())
+    go(
+      PathRequest(
+        source.parent.orEmpty(),
+        PathRequest.Origin.SYSTEM
+      )
+    )
   }
 
   internal sealed interface Command {
@@ -45,4 +58,3 @@ internal class BrowseTargetViewModel(
     data object Error : Command
   }
 }
-

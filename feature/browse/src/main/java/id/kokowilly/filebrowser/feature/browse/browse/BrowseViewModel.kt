@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 internal open class BrowseViewModel(
   private val repository: ResourceRepository,
 ) : ViewModel() {
-  private val statePath = MutableStateFlow("/")
-  val path: StateFlow<String> get() = statePath
+  private val statePath = MutableStateFlow(PathRequest("/", PathRequest.Origin.SYSTEM))
+  val path: StateFlow<PathRequest> get() = statePath
 
   private val stateUsage = MutableStateFlow(UsageResponse.EMPTY)
   val usage: StateFlow<UsageResponse> get() = stateUsage
@@ -26,16 +26,20 @@ internal open class BrowseViewModel(
 
     viewModelScope.launch {
       path.collect { path ->
-        repository.getResource(path).also { resources ->
-          stateFiles.emit(resources)
+          repository.getResource(path.path).also { resources ->
+            stateFiles.emit(resources)
+          }
         }
-      }
     }
   }
 
-  fun go(path: String) {
+  fun go(request: PathRequest) {
     viewModelScope.launch {
-      statePath.emit(path)
+      statePath.emit(request)
     }
+  }
+
+  class PathRequest(val path: String, val origin: Origin) {
+    enum class Origin { UI, SYSTEM }
   }
 }

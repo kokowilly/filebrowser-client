@@ -48,7 +48,9 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { BrowseTargetViewModel(get(), get()) }
+  viewModel { BrowseTargetViewModel(get(), get(), get()) }
+
+  single { BrowseNotificationChannel() }
 }
 
 val featureBrowseLibrary

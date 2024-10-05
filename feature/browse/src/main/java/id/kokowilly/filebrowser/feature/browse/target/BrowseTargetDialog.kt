@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogTargetBinding
 import id.kokowilly.filebrowser.foundation.style.halfExpand
@@ -27,7 +28,12 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
 
   private val adapter = ListItemAdapter(
     itemClickListener = {
-      if (it is Resource.FolderResource) vm.go(it.path)
+      if (it is Resource.FolderResource) vm.go(
+        BrowseViewModel.PathRequest(
+          path = it.path,
+          origin = BrowseViewModel.PathRequest.Origin.UI
+        )
+      )
     }
   )
 
@@ -62,7 +68,7 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
     lifecycleScope.launch {
       vm.originalFile.map { it.name }
         .combine(
-          vm.path.map { it.ifEmpty { "/" } }
+          vm.path.map { it.path.ifEmpty { "/" } }
         ) { source, path ->
           "$source => $path"
         }.collect {

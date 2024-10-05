@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityBrowseBinding
@@ -24,7 +25,10 @@ import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import id.kokowilly.filebrowser.foundation.style.getColor
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import id.kokowilly.filebrowser.foundation.R as CoreR
 
@@ -35,10 +39,12 @@ class BrowseActivity : ImmersiveActivity() {
 
   private val vm: BrowseViewModel by viewModel()
 
+  private val channel: BrowseNotificationChannel by inject()
+
   private val itemClickListener: (Resource) -> Unit = {
     when (it) {
       is Resource.FolderResource ->
-        vm.go(it.path)
+        vm.go(BrowseViewModel.PathRequest(it.path, BrowseViewModel.PathRequest.Origin.UI))
 
       is Resource.ImageResource -> {
         startActivity(
@@ -91,7 +97,7 @@ class BrowseActivity : ImmersiveActivity() {
 
     lifecycleScope.launch {
       vm.path.collect {
-        binding.textPath.text = it.ifBlank { "/" }
+        binding.textPath.text = it.path.ifBlank { "/" }
       }
     }
 
@@ -105,6 +111,24 @@ class BrowseActivity : ImmersiveActivity() {
         }
         .collect {
           adapter.submitList(it)
+        }
+    }
+
+    lifecycleScope.launch {
+      channel.command
+        .collect { command ->
+          when (command) {
+            is BrowseNotificationChannel.Command.Invalidate -> {
+              if (command.path == vm.path.value.path) {
+                vm.go(
+                  BrowseViewModel.PathRequest(
+                    command.path,
+                    BrowseViewModel.PathRequest.Origin.SYSTEM
+                  )
+                )
+              }
+            }
+          }
         }
     }
   }
