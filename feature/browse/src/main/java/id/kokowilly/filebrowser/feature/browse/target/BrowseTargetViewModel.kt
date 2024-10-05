@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,24 +22,23 @@ internal class BrowseTargetViewModel(
   val command: StateFlow<Command> get() = stateCommand
 
   fun move() {
-    viewModelScope.launch {
-      val original = originalFile.value
-      runCatching {
-        actionRepository.move(
-          original.absolutePath,
-          "${path.value.path}/${original.name}"
-        )
-      }.onSuccess {
-        stateCommand.emit(Command.Success)
-        notificationChannel.emit(
-          BrowseNotificationChannel.Command.Invalidate(original.parent.orEmpty())
-        )
-        notificationChannel.emit(
-          BrowseNotificationChannel.Command.Invalidate(path.value.path)
-        )
-      }.onFailure {
-        stateCommand.emit(Command.Error)
+    viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
+      viewModelScope.launch {
+        stateCommand.emit(Command.Error(throwable))
       }
+    }) {
+      val original = originalFile.value
+      actionRepository.move(
+        original.absolutePath,
+        "${path.value.path}/${original.name}"
+      )
+      stateCommand.emit(Command.Success)
+      notificationChannel.emit(
+        BrowseNotificationChannel.Command.Invalidate(original.parent.orEmpty())
+      )
+      notificationChannel.emit(
+        BrowseNotificationChannel.Command.Invalidate(path.value.path)
+      )
     }
   }
 
@@ -55,6 +55,6 @@ internal class BrowseTargetViewModel(
   internal sealed interface Command {
     data object None : Command
     data object Success : Command
-    data object Error : Command
+    class Error(val exception: Throwable) : Command
   }
 }

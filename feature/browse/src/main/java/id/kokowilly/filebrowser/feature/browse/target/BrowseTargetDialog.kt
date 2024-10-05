@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
@@ -97,19 +97,23 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
     lifecycleScope.launch {
       vm.command.collect {
         when (it) {
-          BrowseTargetViewModel.Command.Error -> Toast.makeText(
-            requireContext(),
-            R.string.message_move_failed,
-            Toast.LENGTH_SHORT
-          )
+          is BrowseTargetViewModel.Command.Error -> {
+            Snackbar.make(
+              binding.root,
+              getString(R.string.format_message_move_failed, it.exception.message),
+              Snackbar.LENGTH_SHORT
+            )
+              .setAction(R.string.menu_retry) { vm.move() }
+              .show()
+          }
 
           BrowseTargetViewModel.Command.Success -> {
-            Toast.makeText(
-              requireContext(),
-              R.string.message_move_success,
-              Toast.LENGTH_SHORT
-            ).show()
             dismiss()
+            Snackbar.make(
+              binding.root,
+              R.string.message_move_success,
+              Snackbar.LENGTH_SHORT
+            ).show()
           }
 
           BrowseTargetViewModel.Command.None -> Unit
