@@ -59,6 +59,10 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
     File(arguments?.getString(EXTRA_PATH).orEmpty())
   }
 
+  private val action by lazy {
+    (arguments?.getSerializable(EXTRA_ACTION) as Action?) ?: Action.MOVE
+  }
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.listData.adapter = adapter
@@ -71,8 +75,13 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
         .combine(
           vm.path.map { it.path.ifEmpty { "/" } }
         ) { source, path ->
+          val formatId = when (action) {
+            Action.MOVE -> R.string.format_move_title
+            Action.COPY -> R.string.format_copy_title
+          }
+
           getString(
-            R.string.format_move_title,
+            formatId,
             source,
             path
           )
@@ -127,14 +136,25 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
   }
 
   companion object {
-    fun start(fragmentManager: FragmentManager, filePath: String) {
+    fun start(
+      fragmentManager: FragmentManager,
+      filePath: String,
+      action: Action,
+    ) {
       BrowseTargetDialog().apply {
         arguments = bundleOf(
-          EXTRA_PATH to filePath
+          EXTRA_PATH to filePath,
+          EXTRA_ACTION to action,
         )
       }.show(fragmentManager, "BrowseTargetDialog")
     }
   }
+
+  enum class Action {
+    MOVE,
+    COPY,
+  }
 }
 
 private const val EXTRA_PATH = "path"
+private const val EXTRA_ACTION = "action"
