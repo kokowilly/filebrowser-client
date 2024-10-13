@@ -59,6 +59,10 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
         binding.menuMove.setOnClickListener {
           vm.startMove(filePath)
         }
+
+        binding.menuCopy.setOnClickListener {
+          vm.startCopy(filePath)
+        }
       }
     }
 
@@ -71,6 +75,11 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
           }
 
           is ItemOptionViewModel.Command.Move -> {
+            BrowseTargetDialog.start(parentFragmentManager, command.filePath)
+            dismiss()
+          }
+
+          is ItemOptionViewModel.Command.Copy -> {
             BrowseTargetDialog.start(parentFragmentManager, command.filePath)
             dismiss()
           }

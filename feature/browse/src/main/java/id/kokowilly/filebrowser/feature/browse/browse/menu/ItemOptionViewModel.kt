@@ -32,7 +32,16 @@ class ItemOptionViewModel(
       _command.emit(
         Command.Move(
           filePath = path,
-          parentPath = File(path).parent.orEmpty(),
+        )
+      )
+    }
+  }
+
+  fun startCopy(path: String) {
+    viewModelScope.launch {
+      _command.emit(
+        Command.Copy(
+          filePath = path,
         )
       )
     }
@@ -49,6 +58,8 @@ class ItemOptionViewModel(
   sealed interface Command {
     class Download(val filename: String, val url: Uri) : Command
 
-    class Move(val filePath: String, val parentPath: String) : Command
+    class Move(val filePath: String) : Command
+
+    class Copy(val filePath: String) : Command
   }
 }
