@@ -29,11 +29,19 @@
       app:layout_constraintTop_toBottomOf="@id/text_title" />
 
   <com.google.android.material.button.MaterialButton
+      android:id="@+id/menu_copy"
+      style="@style/Widget.MaterialComponents.Button.TextButton"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/menu_copy"
+      app:layout_constraintTop_toBottomOf="@id/menu_download" />
+
+  <com.google.android.material.button.MaterialButton
       android:id="@+id/menu_move"
       style="@style/Widget.MaterialComponents.Button.TextButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/menu_move"
-      app:layout_constraintTop_toBottomOf="@id/menu_download" />
+      app:layout_constraintTop_toBottomOf="@id/menu_copy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
