@@ -21,4 +21,7 @@
   <string name="format_move_title"><![CDATA[Move: %1$s => %2$s]]></string>
   <string name="format_copy_title"><![CDATA[Copy: %1$s => %2$s]]></string>
   <string name="format_usage">%1$s / %2$s</string>
+  <string name="button_confirm">Confirm</string>
+  <string name="button_cancel">Cancel</string>
+  <string name="hint_rename">Rename</string>
 </resources>
