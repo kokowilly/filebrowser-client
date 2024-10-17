@@ -59,6 +59,10 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
         binding.menuMove.setOnClickListener {
           vm.startMove(filePath)
         }
+
+        binding.menuCopy.setOnClickListener {
+          vm.startCopy(filePath)
+        }
       }
     }
 
@@ -66,12 +70,28 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
       vm.command.collect { command ->
         when (command) {
           is ItemOptionViewModel.Command.Download -> {
-            downloadFile(command.filename, command.url)
+            downloadFile(
+              filename = command.filename,
+              url = command.url,
+            )
             dismiss()
           }
 
           is ItemOptionViewModel.Command.Move -> {
-            BrowseTargetDialog.start(parentFragmentManager, command.filePath)
+            BrowseTargetDialog.start(
+              fragmentManager = parentFragmentManager,
+              filePath = command.filePath,
+              action = BrowseTargetDialog.Action.MOVE,
+            )
+            dismiss()
+          }
+
+          is ItemOptionViewModel.Command.Copy -> {
+            BrowseTargetDialog.start(
+              fragmentManager = parentFragmentManager,
+              filePath = command.filePath,
+              action = BrowseTargetDialog.Action.COPY,
+            )
             dismiss()
           }
         }

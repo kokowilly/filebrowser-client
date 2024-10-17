@@ -4,6 +4,7 @@
   <string name="yes">Yes</string>
 
   <string name="menu_confirm">Confirm</string>
+  <string name="menu_copy">Copy</string>
   <string name="menu_download">Download</string>
   <string name="menu_move">Move</string>
   <string name="menu_retry">Retry</string>
@@ -17,6 +18,7 @@
   <string name="title_exit">Exit Confirmation</string>
 
   <string name="format_message_move_failed">Fail to move.\nCause: %1$s</string>
-  <string name="format_move_title"><![CDATA[%1$s => %2$s]]></string>
+  <string name="format_move_title"><![CDATA[Move: %1$s => %2$s]]></string>
+  <string name="format_copy_title"><![CDATA[Copy: %1$s => %2$s]]></string>
   <string name="format_usage">%1$s / %2$s</string>
 </resources>
