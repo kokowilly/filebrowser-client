@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 
 internal interface ActionRepository {
   suspend fun move(from: String, to: String)
+  suspend fun copy(from: String, to: String)
 }
 
 internal class ActionRepositoryImpl(
@@ -16,6 +17,14 @@ internal class ActionRepositoryImpl(
     fileModificationService.rename(
       from,
       "rename",
+      to,
+    )
+  }
+
+  override suspend fun copy(from: String, to: String) = withContext(dispatcher) {
+    fileModificationService.rename(
+      from,
+      "copy",
       to,
     )
   }

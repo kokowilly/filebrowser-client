@@ -60,8 +60,15 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
   }
 
   private val action by lazy {
-    (arguments?.getSerializable(EXTRA_ACTION) as Action?) ?: Action.MOVE
+    ((arguments?.getSerializable(EXTRA_ACTION) as Action?) ?: Action.MOVE).also {
+      when (it) {
+        Action.MOVE -> performAction = { vm.move() }
+        Action.COPY -> performAction = { vm.copy() }
+      }
+    }
   }
+
+  private lateinit var performAction: () -> Unit
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -112,7 +119,7 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
               getString(R.string.format_message_move_failed, it.exception.message),
               Snackbar.LENGTH_SHORT
             )
-              .setAction(R.string.menu_retry) { vm.move() }
+              .setAction(R.string.menu_retry) { performAction.invoke() }
               .show()
           }
 
@@ -131,7 +138,7 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
     }
 
     binding.buttonConfirm.setOnClickListener {
-      vm.move()
+      performAction.invoke()
     }
   }
 

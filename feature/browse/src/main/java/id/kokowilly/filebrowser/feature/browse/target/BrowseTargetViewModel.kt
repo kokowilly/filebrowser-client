@@ -21,6 +21,24 @@ internal class BrowseTargetViewModel(
   private val stateCommand = MutableStateFlow<Command>(Command.None)
   val command: StateFlow<Command> get() = stateCommand
 
+  fun copy() {
+    viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
+      viewModelScope.launch {
+        stateCommand.emit(Command.Error(throwable))
+      }
+    }) {
+      val original = originalFile.value
+      actionRepository.copy(
+        original.absolutePath,
+        "${path.value.path}/${original.name}"
+      )
+      stateCommand.emit(Command.Success)
+      notificationChannel.emit(
+        BrowseNotificationChannel.Command.Invalidate(path.value.path)
+      )
+    }
+  }
+
   fun move() {
     viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
       viewModelScope.launch {
