@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import id.kokowilly.filebrowser.feature.browse.browse.Resource
-import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogTextInputBinding
 
 class NameInputDialog : BottomSheetDialogFragment() {
@@ -31,12 +29,15 @@ class NameInputDialog : BottomSheetDialogFragment() {
   }
 
   companion object {
-    fun start(activity: AppCompatActivity, resource: Resource) {
-      ItemOptionDialog().apply {
+    fun start(
+      fragmentManager: FragmentManager,
+      filePath: String,
+    ) {
+      NameInputDialog().apply {
         arguments = bundleOf(
-          EXTRA_PATH to resource.path
+          EXTRA_PATH to filePath,
         )
-      }.show(activity.supportFragmentManager, "NameInputDialog")
+      }.show(fragmentManager, "NameInputDialog")
     }
   }
 }

@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
+import id.kokowilly.filebrowser.feature.browse.browse.input.NameInputDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogItemOptionBinding
 import id.kokowilly.filebrowser.feature.browse.target.BrowseTargetDialog
 import kotlinx.coroutines.launch
@@ -63,6 +64,10 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
         binding.menuCopy.setOnClickListener {
           vm.startCopy(filePath)
         }
+
+        binding.menuRename.setOnClickListener {
+          vm.startRename(filePath)
+        }
       }
     }
 
@@ -91,6 +96,14 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
               fragmentManager = parentFragmentManager,
               filePath = command.filePath,
               action = BrowseTargetDialog.Action.COPY,
+            )
+            dismiss()
+          }
+
+          is ItemOptionViewModel.Command.Rename -> {
+            NameInputDialog.start(
+              fragmentManager = parentFragmentManager,
+              filePath = command.filePath,
             )
             dismiss()
           }
