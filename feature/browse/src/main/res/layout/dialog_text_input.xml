@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/horizontal_margin"
+    android:paddingVertical="@dimen/vertical_margin">
+
+  <com.google.android.material.textview.MaterialTextView
+      android:id="@+id/dialog_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="@string/hint_rename"
+      android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/input_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/dialog_title"
+      android:layout_marginTop="@dimen/vertical_margin">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/input_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_rename" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/button_confirm"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/input_layout"
+      android:layout_alignParentEnd="true"
+      android:layout_marginStart="@dimen/horizontal_margin"
+      android:layout_marginTop="@dimen/vertical_margin"
+      android:text="@string/button_confirm" />
+</RelativeLayout>

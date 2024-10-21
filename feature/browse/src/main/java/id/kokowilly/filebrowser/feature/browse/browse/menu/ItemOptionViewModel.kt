@@ -47,6 +47,16 @@ class ItemOptionViewModel(
     }
   }
 
+  fun startRename(path: String) {
+    viewModelScope.launch {
+      _command.emit(
+        Command.Rename(
+          filePath = path,
+        )
+      )
+    }
+  }
+
   private fun makeUrl(path: String): String {
     return networkController.baseUrl +
       "api/raw/" +
@@ -61,5 +71,7 @@ class ItemOptionViewModel(
     class Move(val filePath: String) : Command
 
     class Copy(val filePath: String) : Command
+
+    class Rename(val filePath: String) : Command
   }
 }

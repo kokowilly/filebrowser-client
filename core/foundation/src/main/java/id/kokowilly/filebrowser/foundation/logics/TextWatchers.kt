@@ -13,6 +13,9 @@ object TextWatchers {
   internal const val REGEX_URL =
     "^(https?://)?(([a-zA-Z\\d\\-]+\\.)+[a-zA-Z]{2,}|\\d{1,3}(\\.\\d{1,3}){3})(:\\d+)?(/\\S*)?$"
 
+  internal const val REGEX_FILENAME =
+    "^(?!\\s)(?!.*\\s\\.)[\\w\\s()]+(\\.[a-zA-Z0-9]+)+$"
+
   fun validateUrl(view: EditText, onEdited: Feedback = noFeedback) {
     view.addTextChangedListener(
       RegexValidationWatcher(
@@ -52,12 +55,24 @@ object TextWatchers {
     )
   }
 
+  fun validateFilename(view: EditText, onEdited: Feedback = noFeedback) {
+    view.addTextChangedListener(
+      RegexValidationWatcher(
+        regex = Regex(REGEX_FILENAME),
+        onEdited = onEdited
+      ) { isValid ->
+        view.error = if (isValid) null
+        else
+          view.context.getString(R.string.error_invalid_filename)
+      }
+    )
+  }
 }
 
 private class LengthValidationWatcher(
   private val minLength: Int,
   private val onEdited: Feedback,
-  private val onValidated: (Boolean) -> Unit
+  private val onValidated: (Boolean) -> Unit,
 ) : TextWatcher {
   override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
@@ -73,7 +88,7 @@ private class LengthValidationWatcher(
 private class RegexValidationWatcher(
   private val regex: Regex,
   private val onEdited: Feedback,
-  private val onValidated: (Boolean) -> Unit
+  private val onValidated: (Boolean) -> Unit,
 ) : TextWatcher {
   override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
@@ -89,7 +104,7 @@ private class RegexValidationWatcher(
 private class OptionalRegexValidationWatcher(
   private val regex: Regex,
   private val onEdited: Feedback,
-  private val onValidated: (Boolean) -> Unit
+  private val onValidated: (Boolean) -> Unit,
 ) : TextWatcher {
   override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 

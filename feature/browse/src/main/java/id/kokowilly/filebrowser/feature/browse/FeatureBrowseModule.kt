@@ -5,6 +5,7 @@ import id.kokowilly.filebrowser.feature.browse.browse.BrowseActivity
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
 import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepositoryImpl
+import id.kokowilly.filebrowser.feature.browse.browse.input.NameInputViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionViewModel
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepository
 import id.kokowilly.filebrowser.feature.browse.preview.PreviewRepositoryImpl
@@ -51,6 +52,8 @@ val featureBrowseModule = module {
   viewModel { BrowseTargetViewModel(get(), get(), get()) }
 
   single { BrowseNotificationChannel() }
+
+  viewModel { NameInputViewModel(get(), get(), get()) }
 }
 
 val featureBrowseLibrary
