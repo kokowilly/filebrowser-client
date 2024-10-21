@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogTextInputBinding
 import kotlinx.coroutines.flow.map
@@ -56,6 +57,35 @@ class NameInputDialog : BottomSheetDialogFragment() {
           }
           binding.dialogTitle.text = getString(R.string.format_title_rename, it)
         }
+    }
+
+    lifecycleScope.launch {
+      vm.command.collect {
+        when (it) {
+          is NameInputViewModel.Command.Success -> {
+            dismiss()
+            Snackbar.make(
+              binding.root,
+              R.string.message_move_success,
+              Snackbar.LENGTH_SHORT
+            ).show()
+          }
+
+          is NameInputViewModel.Command.Error -> {
+            Snackbar.make(
+              binding.root,
+              it.exception.message.orEmpty(),
+              Snackbar.LENGTH_SHORT
+            ).show()
+          }
+
+          NameInputViewModel.Command.None -> Unit
+        }
+      }
+    }
+
+    binding.buttonConfirm.setOnClickListener {
+      vm.rename(binding.inputText.text.toString())
     }
   }
 

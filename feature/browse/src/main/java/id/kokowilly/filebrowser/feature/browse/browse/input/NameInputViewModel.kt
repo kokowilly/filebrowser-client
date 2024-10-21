@@ -22,8 +22,7 @@ internal class NameInputViewModel(
   private val stateCommand = MutableStateFlow<Command>(Command.None)
   val command: StateFlow<Command> get() = stateCommand
 
-
-  fun move() {
+  fun rename(newName: String) {
     viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
       viewModelScope.launch {
         stateCommand.emit(Command.Error(throwable))
@@ -31,15 +30,12 @@ internal class NameInputViewModel(
     }) {
       val original = originalFile.value
       actionRepository.move(
-        original.absolutePath,
-        "${path.value.path}/${original.name}"
+        from = original.absolutePath,
+        to = "${original.parentFile?.absolutePath.orEmpty()}/$newName",
       )
       stateCommand.emit(Command.Success)
       notificationChannel.emit(
         BrowseNotificationChannel.Command.Invalidate(original.parent.orEmpty())
-      )
-      notificationChannel.emit(
-        BrowseNotificationChannel.Command.Invalidate(path.value.path)
       )
     }
   }
