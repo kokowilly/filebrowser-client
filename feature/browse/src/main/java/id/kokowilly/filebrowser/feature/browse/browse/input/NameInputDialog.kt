@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogTextInputBinding
+import id.kokowilly.filebrowser.foundation.logics.TextWatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,11 +65,6 @@ class NameInputDialog : BottomSheetDialogFragment() {
         when (it) {
           is NameInputViewModel.Command.Success -> {
             dismiss()
-            Snackbar.make(
-              binding.root,
-              R.string.message_move_success,
-              Snackbar.LENGTH_SHORT
-            ).show()
           }
 
           is NameInputViewModel.Command.Error -> {
@@ -87,6 +83,8 @@ class NameInputDialog : BottomSheetDialogFragment() {
     binding.buttonConfirm.setOnClickListener {
       vm.rename(binding.inputText.text.toString())
     }
+
+    TextWatchers.validateFilename(binding.inputText)
   }
 
   companion object {

@@ -2,4 +2,5 @@
 <resources>
   <string name="error_invalid_url">Invalid Url</string>
   <string name="error_min_length">Input must be at least %1$d characters long</string>
+  <string name="error_invalid_filename">Invalid filename</string>
 </resources>
