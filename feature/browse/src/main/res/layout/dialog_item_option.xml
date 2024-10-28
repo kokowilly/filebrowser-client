@@ -61,4 +61,24 @@
       android:textColor="@color/icon_red"
       app:layout_constraintTop_toBottomOf="@id/menu_move" />
 
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/menu_delete_cancel"
+      style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_cancel"
+      app:layout_constraintEnd_toStartOf="@id/menu_delete_confirm"
+      app:layout_constraintStart_toStartOf="@id/menu_move"
+      app:layout_constraintTop_toBottomOf="@id/menu_move" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/menu_delete_confirm"
+      style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/menu_confirm"
+      app:layout_constraintEnd_toEndOf="@id/menu_move"
+      app:layout_constraintStart_toEndOf="@id/menu_delete_cancel"
+      app:layout_constraintTop_toBottomOf="@id/menu_move" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

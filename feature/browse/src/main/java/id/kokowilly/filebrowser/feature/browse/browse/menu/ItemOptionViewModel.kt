@@ -3,14 +3,18 @@ package id.kokowilly.filebrowser.feature.browse.browse.menu
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
+import id.kokowilly.filebrowser.feature.browse.target.ActionRepository
 import id.kokowilly.filebrowser.lib.network.NetworkController
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ItemOptionViewModel(
+internal class ItemOptionViewModel(
   private val networkController: NetworkController,
+  private val actionRepository: ActionRepository,
+  private val notificationChannel: BrowseNotificationChannel,
 ) : ViewModel() {
 
   private val _command = MutableSharedFlow<Command>()
@@ -65,6 +69,16 @@ class ItemOptionViewModel(
       networkController.accessToken
   }
 
+  fun delete(path: String) {
+    viewModelScope.launch {
+      actionRepository.delete(path)
+
+      _command.emit(Command.Done)
+      val parentPath = File(path).parent.orEmpty()
+      notificationChannel.emit(BrowseNotificationChannel.Command.Invalidate(parentPath))
+    }
+  }
+
   sealed interface Command {
     class Download(val filename: String, val url: Uri) : Command
 
@@ -73,5 +87,7 @@ class ItemOptionViewModel(
     class Copy(val filePath: String) : Command
 
     class Rename(val filePath: String) : Command
+
+    data object Done : Command
   }
 }
