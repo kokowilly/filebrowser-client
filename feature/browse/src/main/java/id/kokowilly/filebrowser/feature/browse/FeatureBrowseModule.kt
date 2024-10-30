@@ -30,7 +30,11 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { BrowseViewModel(get()) }
+  viewModel {
+    BrowseViewModel(
+      repository = get(),
+    )
+  }
 
   factory<PreviewRepository> {
     val networkController: NetworkController = get()
@@ -40,7 +44,13 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { ItemOptionViewModel(get()) }
+  viewModel {
+    ItemOptionViewModel(
+      networkController = get(),
+      actionRepository = get(),
+      notificationChannel = get(),
+    )
+  }
 
   factory<ActionRepository> {
     ActionRepositoryImpl(
@@ -49,11 +59,23 @@ val featureBrowseModule = module {
     )
   }
 
-  viewModel { BrowseTargetViewModel(get(), get(), get()) }
+  viewModel {
+    BrowseTargetViewModel(
+      resourceRepository = get(),
+      actionRepository = get(),
+      notificationChannel = get(),
+    )
+  }
 
   single { BrowseNotificationChannel() }
 
-  viewModel { NameInputViewModel(get(), get(), get()) }
+  viewModel {
+    NameInputViewModel(
+      resourceRepository = get(),
+      actionRepository = get(),
+      notificationChannel = get()
+    )
+  }
 }
 
 val featureBrowseLibrary

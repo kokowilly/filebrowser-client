@@ -40,6 +40,8 @@ dependencies {
   implementation(project(":core:navigation"))
   implementation(project(":lib:network"))
 
+  compileOnly(libs.retrofit.core)
+
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   implementation(libs.material)

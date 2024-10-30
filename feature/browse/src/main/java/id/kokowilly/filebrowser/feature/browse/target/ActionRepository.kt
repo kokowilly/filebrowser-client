@@ -8,6 +8,7 @@ internal interface ActionRepository {
   suspend fun move(from: String, to: String)
   suspend fun rename(from: String, to: String)
   suspend fun copy(from: String, to: String)
+  suspend fun delete(path: String)
 }
 
 internal class ActionRepositoryImpl(
@@ -37,5 +38,11 @@ internal class ActionRepositoryImpl(
       action = "copy",
       destination = to,
     )
+  }
+
+  override suspend fun delete(path: String) = withContext(dispatcher) {
+    fileModificationService.delete(
+      path = path,
+    ).body() ?: Unit
   }
 }

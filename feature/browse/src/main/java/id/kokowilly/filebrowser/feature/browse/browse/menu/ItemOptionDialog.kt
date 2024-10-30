@@ -18,6 +18,8 @@ import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.browse.input.NameInputDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.DialogItemOptionBinding
 import id.kokowilly.filebrowser.feature.browse.target.BrowseTargetDialog
+import id.kokowilly.filebrowser.foundation.logics.Toggle
+import id.kokowilly.filebrowser.foundation.style.animate
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -68,8 +70,22 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
         binding.menuRename.setOnClickListener {
           vm.startRename(filePath)
         }
+
+        binding.menuDelete.setOnClickListener {
+          deleteToggle.enable()
+        }
+
+        binding.menuDeleteCancel.setOnClickListener {
+          deleteToggle.disable()
+        }
+
+        binding.menuDeleteConfirm.setOnClickListener {
+          vm.delete(filePath)
+        }
       }
     }
+
+    deleteToggle.disable()
 
     lifecycleScope.launch {
       vm.command.collect { command ->
@@ -107,6 +123,10 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
             )
             dismiss()
           }
+
+          is ItemOptionViewModel.Command.Done -> {
+            dismiss()
+          }
         }
       }
     }
@@ -131,6 +151,36 @@ class ItemOptionDialog : BottomSheetDialogFragment() {
       Toast.LENGTH_LONG
     ).show()
   }
+
+  private val deleteToggle = Toggle(
+    isEnable = {
+      runCatching {
+        binding.menuDeleteConfirm.visibility == View.VISIBLE
+      }.getOrElse { false }
+    },
+    enable = {
+      runCatching {
+        binding.menuDeleteConfirm.animate(R.anim.fade_out)
+
+        binding.menuDeleteConfirm.visibility = View.VISIBLE
+        binding.menuDeleteCancel.visibility = View.VISIBLE
+        binding.menuDelete.visibility = View.GONE
+
+        binding.menuDeleteConfirm.animate(R.anim.slide_in_right)
+        binding.menuDeleteCancel.animate(R.anim.slide_in_left)
+      }
+    },
+    disable = {
+      binding.menuDeleteConfirm.animate(R.anim.slide_out_right)
+      binding.menuDeleteCancel.animate(R.anim.slide_out_left)
+
+      binding.menuDeleteConfirm.visibility = View.GONE
+      binding.menuDeleteCancel.visibility = View.GONE
+      binding.menuDelete.visibility = View.VISIBLE
+
+      binding.menuDelete.animate(R.anim.fade_in)
+    }
+  )
 
   companion object {
     fun start(activity: AppCompatActivity, resource: Resource) {

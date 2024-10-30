@@ -52,4 +52,36 @@
       android:text="@string/menu_move"
       app:layout_constraintTop_toBottomOf="@id/menu_copy" />
 
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/menu_delete"
+      style="@style/Widget.MaterialComponents.Button.TextButton"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/menu_delete"
+      android:textColor="@color/icon_red"
+      app:layout_constraintTop_toBottomOf="@id/menu_move" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/menu_delete_cancel"
+      style="@style/Widget.MaterialComponents.Button"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/horizontal_margin"
+      android:text="@string/button_cancel"
+      app:layout_constraintLeft_toLeftOf="@id/menu_move"
+      app:layout_constraintRight_toLeftOf="@id/menu_delete_confirm"
+      app:layout_constraintTop_toBottomOf="@id/menu_move" />
+
+  <com.google.android.material.button.MaterialButton
+      android:id="@+id/menu_delete_confirm"
+      style="@style/Widget.MaterialComponents.Button"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/horizontal_margin"
+      android:backgroundTint="@color/icon_red"
+      android:text="@string/menu_confirm"
+      app:layout_constraintLeft_toRightOf="@id/menu_delete_cancel"
+      app:layout_constraintRight_toRightOf="@id/menu_move"
+      app:layout_constraintTop_toBottomOf="@id/menu_move" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
