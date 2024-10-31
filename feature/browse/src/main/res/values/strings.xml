@@ -8,6 +8,9 @@
   <string name="menu_download">Download</string>
   <string name="menu_move">Move</string>
   <string name="menu_retry">Retry</string>
+  <string name="menu_rename">Rename</string>
+  <string name="menu_delete">Delete</string>
+  <string name="menu_more">Menu</string>
 
   <string name="message_download_in_progress">Download in progress, check your notification.</string>
   <string name="message_downloading">Downloading %1$s</string>
@@ -21,10 +24,10 @@
   <string name="format_move_title"><![CDATA[Move: %1$s => %2$s]]></string>
   <string name="format_copy_title"><![CDATA[Copy: %1$s => %2$s]]></string>
   <string name="format_usage">%1$s / %2$s</string>
+  <string name="format_title_rename">Rename \'%1$s\'</string>
+
   <string name="button_confirm">Confirm</string>
   <string name="button_cancel">Cancel</string>
+  
   <string name="hint_rename">Rename</string>
-  <string name="menu_rename">Rename</string>
-  <string name="format_title_rename">Rename \'%1$s\'</string>
-  <string name="menu_delete">Delete</string>
 </resources>

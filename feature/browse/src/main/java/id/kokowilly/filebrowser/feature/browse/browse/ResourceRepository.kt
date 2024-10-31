@@ -1,10 +1,12 @@
 package id.kokowilly.filebrowser.feature.browse.browse
 
+import android.os.Parcelable
 import id.kokowilly.filebrowser.lib.network.api.DataService
 import id.kokowilly.filebrowser.lib.network.api.ItemResponse
 import id.kokowilly.filebrowser.lib.network.api.UsageResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import kotlinx.parcelize.Parcelize
 
 internal interface ResourceRepository {
   suspend fun getUsage(): UsageResponse
@@ -53,6 +55,7 @@ sealed interface Resource {
   val size: Long
   val extension: String
 
+  @Parcelize
   data class ImageResource(
     override val name: String,
     override val path: String,
@@ -61,7 +64,7 @@ sealed interface Resource {
     val iconResource: Int,
     val iconColor: Int,
     val thumbnail: String,
-  ) : Resource {
+  ) : Resource, Parcelable {
     constructor(response: ItemResponse, iconAndColor: Pair<Int, Int>, thumbnailUrl: String) : this(
       name = response.name,
       path = response.path,

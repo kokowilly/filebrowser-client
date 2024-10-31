@@ -47,7 +47,7 @@ class BrowseActivity : ImmersiveActivity() {
       is Resource.ImageResource -> {
         startActivity(
           Intent(this, PreviewActivity::class.java)
-            .putExtra(PreviewActivity.EXTRA_PATH, it.path)
+            .putExtra(PreviewActivity.EXTRA_RESOURCE, it)
         )
       }
 
