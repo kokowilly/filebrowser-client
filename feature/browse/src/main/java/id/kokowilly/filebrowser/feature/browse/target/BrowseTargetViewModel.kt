@@ -1,7 +1,6 @@
 package id.kokowilly.filebrowser.feature.browse.target
 
 import androidx.lifecycle.viewModelScope
-import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -13,7 +12,6 @@ import java.io.File
 internal class BrowseTargetViewModel(
   resourceRepository: ResourceRepository,
   private val actionRepository: ActionRepository,
-  private val notificationChannel: BrowseNotificationChannel,
 ) : BrowseViewModel(resourceRepository) {
   private lateinit var stateOriginalFile: StateFlow<File>
   val originalFile: StateFlow<File> get() = stateOriginalFile
@@ -33,9 +31,6 @@ internal class BrowseTargetViewModel(
         "${path.value.path}/${original.name}"
       )
       stateCommand.emit(Command.Success)
-      notificationChannel.emit(
-        BrowseNotificationChannel.Command.Invalidate(path.value.path)
-      )
     }
   }
 
@@ -51,12 +46,6 @@ internal class BrowseTargetViewModel(
         "${path.value.path}/${original.name}"
       )
       stateCommand.emit(Command.Success)
-      notificationChannel.emit(
-        BrowseNotificationChannel.Command.Invalidate(original.parent.orEmpty())
-      )
-      notificationChannel.emit(
-        BrowseNotificationChannel.Command.Invalidate(path.value.path)
-      )
     }
   }
 

@@ -48,13 +48,13 @@ val featureBrowseModule = module {
     ItemOptionViewModel(
       networkController = get(),
       actionRepository = get(),
-      notificationChannel = get(),
     )
   }
 
   factory<ActionRepository> {
     ActionRepositoryImpl(
       fileModificationService = get(),
+      notificationChannel = get(),
       dispatcher = Dispatchers.IO,
     )
   }
@@ -63,7 +63,6 @@ val featureBrowseModule = module {
     BrowseTargetViewModel(
       resourceRepository = get(),
       actionRepository = get(),
-      notificationChannel = get(),
     )
   }
 
@@ -73,7 +72,6 @@ val featureBrowseModule = module {
     NameInputViewModel(
       resourceRepository = get(),
       actionRepository = get(),
-      notificationChannel = get()
     )
   }
 }

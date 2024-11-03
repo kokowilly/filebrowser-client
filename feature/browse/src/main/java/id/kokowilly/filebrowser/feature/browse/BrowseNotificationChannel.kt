@@ -12,9 +12,9 @@ internal class BrowseNotificationChannel {
   )
   val command: SharedFlow<Command> get() = _command
 
-  fun emit(command: Command) = _command.tryEmit(command).also { println("emit $it") }
+  suspend fun emit(command: Command) = _command.emit(command)
 
   sealed interface Command {
-    class Invalidate(val path: String) : Command
+    data class Invalidate(val path: String) : Command
   }
 }

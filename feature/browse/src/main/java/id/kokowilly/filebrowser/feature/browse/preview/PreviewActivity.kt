@@ -6,12 +6,16 @@ import android.view.MenuItem
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import coil.load
+import com.google.android.material.snackbar.Snackbar
+import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityPreviewBinding
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -19,6 +23,8 @@ class PreviewActivity : ImmersiveActivity() {
   private val previewRepository: PreviewRepository by inject()
 
   private val binding by lazy { ActivityPreviewBinding.inflate(layoutInflater) }
+
+  private val notificationChannel: BrowseNotificationChannel by inject()
 
   private val imageResource by lazy {
     intent.getParcelableExtra<Resource.ImageResource>(EXTRA_RESOURCE)!!
@@ -44,7 +50,7 @@ class PreviewActivity : ImmersiveActivity() {
       binding.toolbarLayout.apply {
         setPadding(
           paddingLeft,
-          systemBarsInsets.top.also { println(it) },
+          systemBarsInsets.top,
           paddingRight,
           paddingBottom
         )
@@ -65,6 +71,24 @@ class PreviewActivity : ImmersiveActivity() {
     )
 
     binding.toolbar.title = file.name
+
+    lifecycleScope.launch {
+      notificationChannel.command.collect {
+        when (it) {
+          is BrowseNotificationChannel.Command.Invalidate -> {
+            if (it.path == imageResource.path) {
+              Snackbar.make(
+                binding.root,
+                "${file.name} is modified",
+                Snackbar.LENGTH_SHORT
+              ).show()
+
+              finish()
+            }
+          }
+        }
+      }
+    }
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -84,7 +108,7 @@ class PreviewActivity : ImmersiveActivity() {
   }
 
   companion object {
-//    const val EXTRA_PATH = "path"
+    //    const val EXTRA_PATH = "path"
     const val EXTRA_RESOURCE = "resource"
   }
 }
