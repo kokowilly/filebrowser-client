@@ -8,7 +8,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import coil.load
-import com.google.android.material.snackbar.Snackbar
 import id.kokowilly.filebrowser.feature.browse.BrowseNotificationChannel
 import id.kokowilly.filebrowser.feature.browse.R
 import id.kokowilly.filebrowser.feature.browse.browse.Resource
@@ -77,12 +76,6 @@ class PreviewActivity : ImmersiveActivity() {
         when (it) {
           is BrowseNotificationChannel.Command.Invalidate -> {
             if (it.path == imageResource.path) {
-              Snackbar.make(
-                binding.root,
-                "${file.name} is modified",
-                Snackbar.LENGTH_SHORT
-              ).show()
-
               finish()
             }
           }
@@ -108,7 +101,6 @@ class PreviewActivity : ImmersiveActivity() {
   }
 
   companion object {
-    //    const val EXTRA_PATH = "path"
     const val EXTRA_RESOURCE = "resource"
   }
 }

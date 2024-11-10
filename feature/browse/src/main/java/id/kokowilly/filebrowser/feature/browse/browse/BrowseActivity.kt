@@ -121,10 +121,11 @@ class BrowseActivity : ImmersiveActivity() {
         .collect { command ->
           when (command) {
             is BrowseNotificationChannel.Command.Invalidate -> {
-              if (command.path == vm.path.value.path) {
+              val currentPath = vm.path.value.path
+              if (command.path.startsWith(currentPath)) {
                 vm.go(
                   BrowseViewModel.PathRequest(
-                    command.path,
+                    currentPath,
                     BrowseViewModel.PathRequest.Origin.SYSTEM
                   )
                 )
