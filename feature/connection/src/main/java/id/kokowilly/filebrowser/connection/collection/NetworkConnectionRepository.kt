@@ -7,7 +7,7 @@ import id.kokowilly.filebrowser.lib.network.NetworkController
 import id.kokowilly.filebrowser.lib.network.api.AuthService
 import id.kokowilly.filebrowser.lib.network.api.LoginRequest
 import id.kokowilly.filebrowser.lib.network.build
-import id.kokowilly.filebrowser.log.d
+import id.kokowilly.filebrowser.log.Tag
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -21,6 +21,8 @@ internal class NetworkConnectionRepositoryImpl(
   private val regex: Regex,
   private val dispatcher: CoroutineDispatcher,
 ) : NetworkConnectionRepository {
+  private val tag = Tag("NetworkConnectionRepository")
+
   override suspend fun initializeConnection(connectionId: Int) = withContext(dispatcher) {
     val connection = connectionDao.getById(connectionId)
 
@@ -36,7 +38,7 @@ internal class NetworkConnectionRepositoryImpl(
         runCatching { testNetwork(url, connection.username, connection.password) }
           .onFailure {
             cause = it
-            d("could not connect to $url", it)
+            tag.e("could not connect to $url", it)
           }
           .onSuccess {
             networkController.setAccessToken(it)
@@ -50,7 +52,7 @@ internal class NetworkConnectionRepositoryImpl(
   private suspend fun testNetwork(
     url: String,
     username: String,
-    password: String
+    password: String,
   ): String {
     networkController.initialize(url)
 

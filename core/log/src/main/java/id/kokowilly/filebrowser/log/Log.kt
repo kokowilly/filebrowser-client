@@ -1,31 +1,30 @@
 package id.kokowilly.filebrowser.log
 
 object Logger {
-    interface LogWriter {
-        fun i(tag: String, message: String)
-        fun d(tag: String, message: String, throwable: Throwable? = null)
-        fun e(tag: String, message: String, throwable: Throwable? = null)
+  interface LogWriter {
+    fun i(tag: String, message: String)
+    fun d(tag: String, message: String, throwable: Throwable? = null)
+    fun e(tag: String, message: String, throwable: Throwable? = null)
 
-        object NOTHING : LogWriter {
-            override fun i(tag: String, message: String) = Unit
+    object NOTHING : LogWriter {
+      override fun i(tag: String, message: String) = Unit
 
-            override fun d(tag: String, message: String, throwable: Throwable?) = Unit
+      override fun d(tag: String, message: String, throwable: Throwable?) = Unit
 
-            override fun e(tag: String, message: String, throwable: Throwable?) = Unit
-        }
+      override fun e(tag: String, message: String, throwable: Throwable?) = Unit
     }
+  }
 
-    var logWriter: LogWriter = LogWriter.NOTHING
+  var logWriter: LogWriter = LogWriter.NOTHING
 }
 
-inline fun <reified T : Any> T.i(message: String) {
-    Logger.logWriter.i(T::class.java.simpleName, message)
-}
+class Tag(private val name: String) {
+  fun i(message: String) =
+    Logger.logWriter.i(name, message)
 
-inline fun <reified T : Any> T.d(message: String, throwable: Throwable? = null) {
-    Logger.logWriter.d(T::class.java.simpleName, message, throwable)
-}
+  fun d(message: String, throwable: Throwable? = null) =
+    Logger.logWriter.d(name, message, throwable)
 
-inline fun <reified T : Any> T.e(message: String, throwable: Throwable? = null) {
-    Logger.logWriter.e(T::class.java.simpleName, message, throwable)
+  fun e(message: String, throwable: Throwable? = null) =
+    Logger.logWriter.e(name, message, throwable)
 }

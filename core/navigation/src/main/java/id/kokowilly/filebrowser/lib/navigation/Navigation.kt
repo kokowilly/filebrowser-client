@@ -2,9 +2,11 @@ package id.kokowilly.filebrowser.lib.navigation
 
 import android.content.Context
 import android.content.Intent
-import id.kokowilly.filebrowser.log.d
+import id.kokowilly.filebrowser.log.Tag
 
 object Navigation {
+  private val tag = Tag("Navigation")
+
   private val registry = mutableMapOf<String, NavigationRegistry>()
 
   fun register(path: String, registry: NavigationRegistry) {
@@ -12,7 +14,7 @@ object Navigation {
   }
 
   fun intentOf(context: Context, path: String, data: Map<String, Any> = emptyMap()): Intent {
-    d("navigate to: $path")
+    tag.d("navigate to: $path")
 
     return requireNotNull(registry[path]).makeIntent(context, data)
   }

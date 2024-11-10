@@ -38,6 +38,7 @@ android {
 dependencies {
 
   implementation(project(":core:foundation"))
+  implementation(project(":core:log"))
   implementation(project(":core:navigation"))
   implementation(project(":lib:network"))
 
