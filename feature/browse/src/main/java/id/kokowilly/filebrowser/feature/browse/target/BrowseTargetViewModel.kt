@@ -58,7 +58,7 @@ internal class BrowseTargetViewModel(
     go(
       PathRequest(
         source.parent.orEmpty(),
-        PathRequest.Origin.SYSTEM
+        PathRequest.Origin.System
       )
     )
   }

@@ -43,7 +43,7 @@ internal class NameInputViewModel(
     go(
       PathRequest(
         source.parent.orEmpty(),
-        PathRequest.Origin.SYSTEM
+        PathRequest.Origin.System
       )
     )
   }

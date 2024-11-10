@@ -32,7 +32,7 @@ class BrowseTargetDialog : BottomSheetDialogFragment() {
       if (it is Resource.FolderResource) vm.go(
         BrowseViewModel.PathRequest(
           path = it.path,
-          origin = BrowseViewModel.PathRequest.Origin.UI
+          origin = BrowseViewModel.PathRequest.Origin.UI(System.currentTimeMillis())
         )
       )
     }

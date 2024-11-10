@@ -15,7 +15,7 @@ internal open class BrowseViewModel(
 ) : ViewModel() {
   protected val tag = Tag(tagName)
 
-  private val statePath = MutableStateFlow(PathRequest("/", PathRequest.Origin.SYSTEM))
+  private val statePath = MutableStateFlow(PathRequest("/", PathRequest.Origin.System))
   val path: StateFlow<PathRequest> get() = statePath
 
   private val stateUsage = MutableStateFlow(UsageResponse.EMPTY)
@@ -23,6 +23,9 @@ internal open class BrowseViewModel(
 
   private val stateFiles = MutableStateFlow<List<Resource>>(emptyList())
   val files: StateFlow<List<Resource>> get() = stateFiles
+
+  private val stateLoading = MutableStateFlow(false)
+  val loading: StateFlow<Boolean> get() = stateLoading
 
   init {
     viewModelScope.launch {
@@ -33,9 +36,11 @@ internal open class BrowseViewModel(
       path
         .onEach { tag.d("path: $it") }
         .collect { path ->
+          stateLoading.emit(true)
           repository.getResource(path.path).also { resources ->
             stateFiles.emit(resources)
           }
+          stateLoading.emit(false)
         }
     }
   }
@@ -47,6 +52,9 @@ internal open class BrowseViewModel(
   }
 
   data class PathRequest(val path: String, val origin: Origin) {
-    enum class Origin { UI, SYSTEM }
+    sealed interface Origin {
+      data class UI(val timestamp: Long) : Origin
+      data object System : Origin
+    }
   }
 }

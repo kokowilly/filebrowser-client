@@ -45,7 +45,12 @@ class BrowseActivity : ImmersiveActivity() {
   private val itemClickListener: (Resource) -> Unit = {
     when (it) {
       is Resource.FolderResource ->
-        vm.go(BrowseViewModel.PathRequest(it.path, BrowseViewModel.PathRequest.Origin.UI))
+        vm.go(
+          BrowseViewModel.PathRequest(
+            path = it.path,
+            origin = BrowseViewModel.PathRequest.Origin.UI(System.currentTimeMillis()),
+          )
+        )
 
       is Resource.ImageResource -> {
         startActivity(
@@ -81,6 +86,14 @@ class BrowseActivity : ImmersiveActivity() {
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
     binding.listData.adapter = adapter
+    binding.swipeRefresh.setOnRefreshListener {
+      vm.go(
+        vm.path.value.copy(
+          origin = BrowseViewModel.PathRequest.Origin.UI(System.currentTimeMillis())
+        )
+      )
+    }
+
     onBackPressedDispatcher.addCallback(backDispatcher)
 
     lifecycleScope.launch {
@@ -103,6 +116,12 @@ class BrowseActivity : ImmersiveActivity() {
     lifecycleScope.launch {
       vm.path.collect {
         binding.textPath.text = it.path.ifBlank { "/" }
+      }
+    }
+
+    lifecycleScope.launch {
+      vm.loading.collect {
+        binding.swipeRefresh.isRefreshing = it
       }
     }
 
@@ -130,7 +149,7 @@ class BrowseActivity : ImmersiveActivity() {
                 vm.go(
                   BrowseViewModel.PathRequest(
                     currentPath,
-                    BrowseViewModel.PathRequest.Origin.SYSTEM
+                    BrowseViewModel.PathRequest.Origin.System
                   )
                 )
               }
