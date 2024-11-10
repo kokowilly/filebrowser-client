@@ -24,6 +24,7 @@ import id.kokowilly.filebrowser.feature.browse.preview.PreviewActivity
 import id.kokowilly.filebrowser.foundation.logics.DataFormat
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
 import id.kokowilly.filebrowser.foundation.style.getColor
+import id.kokowilly.filebrowser.log.Tag
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -31,6 +32,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import id.kokowilly.filebrowser.foundation.R as CoreR
 
 class BrowseActivity : ImmersiveActivity() {
+  private val tag = Tag("BrowseActivity")
+
   private val binding: ActivityBrowseBinding by lazy {
     ActivityBrowseBinding.inflate(layoutInflater)
   }
@@ -121,6 +124,7 @@ class BrowseActivity : ImmersiveActivity() {
         .collect { command ->
           when (command) {
             is BrowseNotificationChannel.Command.Invalidate -> {
+              tag.d("changed: $command")
               val currentPath = vm.path.value.path
               if (command.path.startsWith(currentPath)) {
                 vm.go(

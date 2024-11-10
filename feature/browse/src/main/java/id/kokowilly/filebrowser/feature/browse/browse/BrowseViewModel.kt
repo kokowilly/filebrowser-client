@@ -3,13 +3,18 @@ package id.kokowilly.filebrowser.feature.browse.browse
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.kokowilly.filebrowser.lib.network.api.UsageResponse
+import id.kokowilly.filebrowser.log.Tag
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal open class BrowseViewModel(
+  tagName: String = "BrowseViewModel",
   private val repository: ResourceRepository,
 ) : ViewModel() {
+  protected val tag = Tag(tagName)
+
   private val statePath = MutableStateFlow(PathRequest("/", PathRequest.Origin.SYSTEM))
   val path: StateFlow<PathRequest> get() = statePath
 
@@ -25,7 +30,9 @@ internal open class BrowseViewModel(
     }
 
     viewModelScope.launch {
-      path.collect { path ->
+      path
+        .onEach { tag.d("path: $it") }
+        .collect { path ->
           repository.getResource(path.path).also { resources ->
             stateFiles.emit(resources)
           }
@@ -39,7 +46,7 @@ internal open class BrowseViewModel(
     }
   }
 
-  class PathRequest(val path: String, val origin: Origin) {
+  data class PathRequest(val path: String, val origin: Origin) {
     enum class Origin { UI, SYSTEM }
   }
 }

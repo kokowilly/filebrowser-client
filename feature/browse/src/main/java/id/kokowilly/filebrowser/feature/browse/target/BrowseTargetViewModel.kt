@@ -3,6 +3,7 @@ package id.kokowilly.filebrowser.feature.browse.target
 import androidx.lifecycle.viewModelScope
 import id.kokowilly.filebrowser.feature.browse.browse.BrowseViewModel
 import id.kokowilly.filebrowser.feature.browse.browse.ResourceRepository
+import id.kokowilly.filebrowser.foundation.logics.cleanPath
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,10 @@ import java.io.File
 internal class BrowseTargetViewModel(
   resourceRepository: ResourceRepository,
   private val actionRepository: ActionRepository,
-) : BrowseViewModel(resourceRepository) {
+) : BrowseViewModel(
+  "BrowseTargetViewModel",
+  resourceRepository,
+) {
   private lateinit var stateOriginalFile: StateFlow<File>
   val originalFile: StateFlow<File> get() = stateOriginalFile
 
@@ -25,11 +29,11 @@ internal class BrowseTargetViewModel(
         stateCommand.emit(Command.Error(throwable))
       }
     }) {
-      val original = originalFile.value
-      actionRepository.copy(
-        original.absolutePath,
-        "${path.value.path}/${original.name}"
-      )
+      val (from, to) = originalFile.value.let { original ->
+        original.absolutePath to "${path.value.path}/${original.name}".cleanPath()
+      }
+      tag.i("copy $from to $to")
+      actionRepository.copy(from, to)
       stateCommand.emit(Command.Success)
     }
   }
@@ -40,11 +44,11 @@ internal class BrowseTargetViewModel(
         stateCommand.emit(Command.Error(throwable))
       }
     }) {
-      val original = originalFile.value
-      actionRepository.move(
-        original.absolutePath,
-        "${path.value.path}/${original.name}"
-      )
+      val (from, to) = originalFile.value.let { original ->
+        original.absolutePath to "${path.value.path}/${original.name}".cleanPath()
+      }
+      tag.i("move $from to $to")
+      actionRepository.move(from, to)
       stateCommand.emit(Command.Success)
     }
   }

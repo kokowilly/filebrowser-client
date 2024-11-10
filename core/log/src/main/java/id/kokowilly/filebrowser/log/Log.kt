@@ -18,7 +18,9 @@ object Logger {
   var logWriter: LogWriter = LogWriter.NOTHING
 }
 
-class Tag(private val name: String) {
+class Tag(name: String) {
+  private val name = "FileBrowser-$name"
+
   fun i(message: String) =
     Logger.logWriter.i(name, message)
 

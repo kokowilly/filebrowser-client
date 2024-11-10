@@ -10,7 +10,7 @@ internal class BrowseNotificationChannel {
   private val tag = Tag("NotificationChannel")
 
   private val _command = MutableSharedFlow<Command>(
-    extraBufferCapacity = 1,
+    extraBufferCapacity = 2,
     onBufferOverflow = BufferOverflow.DROP_OLDEST,
   )
   val command: SharedFlow<Command> get() = _command

@@ -13,7 +13,10 @@ import java.io.File
 internal class NameInputViewModel(
   resourceRepository: ResourceRepository,
   private val actionRepository: ActionRepository,
-) : BrowseViewModel(resourceRepository) {
+) : BrowseViewModel(
+  "NameInputViewModel",
+  resourceRepository,
+) {
   private lateinit var stateOriginalFile: StateFlow<File>
   val originalFile: StateFlow<File> get() = stateOriginalFile
 

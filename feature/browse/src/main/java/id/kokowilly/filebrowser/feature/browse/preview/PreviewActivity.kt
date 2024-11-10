@@ -14,11 +14,14 @@ import id.kokowilly.filebrowser.feature.browse.browse.Resource
 import id.kokowilly.filebrowser.feature.browse.browse.menu.ItemOptionDialog
 import id.kokowilly.filebrowser.feature.browse.databinding.ActivityPreviewBinding
 import id.kokowilly.filebrowser.foundation.style.ImmersiveActivity
+import id.kokowilly.filebrowser.log.Tag
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
 
 class PreviewActivity : ImmersiveActivity() {
+  private val tag = Tag("PreviewActivity")
+
   private val previewRepository: PreviewRepository by inject()
 
   private val binding by lazy { ActivityPreviewBinding.inflate(layoutInflater) }
@@ -63,6 +66,8 @@ class PreviewActivity : ImmersiveActivity() {
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
 
+    tag.d("viewing: ${file.path}")
+
     binding.imagePreview.load(
       previewRepository.getPreviewUrl(
         imageResource.path
@@ -72,15 +77,17 @@ class PreviewActivity : ImmersiveActivity() {
     binding.toolbar.title = file.name
 
     lifecycleScope.launch {
-      notificationChannel.command.collect {
-        when (it) {
-          is BrowseNotificationChannel.Command.Invalidate -> {
-            if (it.path == imageResource.path) {
-              finish()
+      notificationChannel.command
+        .collect {
+          when (it) {
+            is BrowseNotificationChannel.Command.Invalidate -> {
+              tag.d("changed: $it")
+              if (it.path == imageResource.path) {
+                finish()
+              }
             }
           }
         }
-      }
     }
   }
 
