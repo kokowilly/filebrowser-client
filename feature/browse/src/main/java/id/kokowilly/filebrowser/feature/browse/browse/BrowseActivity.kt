@@ -47,7 +47,7 @@ class BrowseActivity : ImmersiveActivity() {
       is Resource.ImageResource -> {
         startActivity(
           Intent(this, PreviewActivity::class.java)
-            .putExtra(PreviewActivity.EXTRA_PATH, it.path)
+            .putExtra(PreviewActivity.EXTRA_RESOURCE, it)
         )
       }
 
@@ -121,10 +121,11 @@ class BrowseActivity : ImmersiveActivity() {
         .collect { command ->
           when (command) {
             is BrowseNotificationChannel.Command.Invalidate -> {
-              if (command.path == vm.path.value.path) {
+              val currentPath = vm.path.value.path
+              if (command.path.startsWith(currentPath)) {
                 vm.go(
                   BrowseViewModel.PathRequest(
-                    command.path,
+                    currentPath,
                     BrowseViewModel.PathRequest.Origin.SYSTEM
                   )
                 )
